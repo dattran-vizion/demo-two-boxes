@@ -6,6 +6,7 @@
     "@react-spring/three": "^9.5.5",
     "@react-three/drei": "^7.13.1",
     "@react-three/fiber": "7.0.12",
+    "gsap": "3.7.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "4.0.3",
