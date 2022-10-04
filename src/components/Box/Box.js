@@ -1,7 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
-import { useSpring, animated } from "@react-spring/three";
+import { useLoader, useThree, useFrame } from "@react-three/fiber";
 
 import PlaneFixed from "../PlaneFixed/PlaneFixed";
 import PlaneMove from "../PlaneMove/PlaneMove";
@@ -13,53 +12,39 @@ function Box(props) {
   let hotspots = fakeData[showBoxIndex - 1].hotspots;
   const images = props.images;
 
-  const spring = useSpring({
-    loop: false,
-    from: {
-      position: props.start,
-      opacity: props.opacityStart,
-    },
-    to: {
-      position: props.end,
-      opacity: props.opacityEnd,
-    },
-    config: {
-      duration: 1000,
-    },
-    onRest: () => props.setShowBox(false),
-  });
-
   const textures = useLoader(THREE.TextureLoader, images);
 
   return (
     <>
-      <animated.mesh position={spring.position} rotation={props.rotation}>
+      <mesh position={props.position} rotation={props.rotation}>
         <boxBufferGeometry attach="geometry" args={props.args} />
         {textures.map((texture, index) => (
-          <animated.meshStandardMaterial
+          <meshStandardMaterial
             key={index}
             attachArray="material"
             map={texture}
             side={THREE.DoubleSide}
-            opacity={spring.opacity}
           />
         ))}
-      </animated.mesh>
-      {/* 
-      <mesh position={[1000, 1000, 0]}>
-        <boxBufferGeometry attach="geometry" args={props.args} />
+      </mesh>
+
+      <mesh position={[0, 0, 0]}>
+        <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshStandardMaterial
           attach="material"
           side={THREE.DoubleSide}
-          color="red"
           opacity={0}
+          transparent
         />
-      </mesh> */}
-
-      {/* {hotspots.map((hotspot, index) => (
-        <PlaneFixed key={index} hotspot={hotspot} />
-      ))}
-      <PlaneMove /> */}
+        {hotspots.map((hotspot, index) => (
+          <PlaneFixed
+            key={index}
+            hotspot={hotspot}
+            setShowBoxIndex={setShowBoxIndex}
+          />
+        ))}
+        <PlaneMove />
+      </mesh>
     </>
   );
 }

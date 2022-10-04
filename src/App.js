@@ -6,20 +6,15 @@ import { degToRad } from "three/src/math/MathUtils";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 // import { OrbitControls } from "@react-three/drei";
 
-import CurrentScene from "./components/currentScene";
-import NextScene from "./components/nextScene";
+import Box from "./components/Box/Box";
 import CameraController from "./components/CameraController";
 import fakeData from "./assets/fakeData/data";
 
 import "./styles.css";
 
 export default function App() {
-  const [showBox, setShowBox] = useState(true);
   return (
-    <Canvas
-      camera={{ position: [10, 0, 0], fov: 60, near: 10, far: 5000 }}
-      // camera={{ position: [2000, 2000, 2000], fov: 60, near: 10, far: 5000 }}
-    >
+    <Canvas camera={{ position: [0, 9, 0], fov: 50, near: 0.01, far: 10000 }}>
       <CameraController />
       <ambientLight />
       {/* <pointLight
@@ -29,28 +24,13 @@ export default function App() {
         position={[0, 9, 0]}
       /> */}
       {/* <axesHelper args={[1200, 1200, 1200]} /> */}
-      <axesHelper args={[100, 100, 100]} />
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <Suspense fallback={null}>
-        {showBox && (
-          <CurrentScene
-            start={[0, 0, 0]}
-            end={[0, 0, 0]}
-            opacityStart={1}
-            opacityEnd={0.3}
-            images={fakeData[0].images}
-            rotation={[0, 0, 0]}
-            args={[1100, 1100, 1100]}
-            setShowBox={setShowBox}
-          />
-        )}
-        <NextScene
-          start={[-499, 0, 0]}
-          end={[0, 0, 0]}
-          opacityStart={0.2}
-          opacityEnd={1}
-          images={fakeData[1].images}
-          rotation={[0, Math.PI, Math.PI / 4]}
-          args={[1099, 1099, 1099]}
+        <Box
+          position={[0, 0, 0]}
+          images={fakeData[0].images}
+          rotation={[0, 0, 0]}
+          args={[1100, 1100, 1100]}
         />
       </Suspense>
     </Canvas>

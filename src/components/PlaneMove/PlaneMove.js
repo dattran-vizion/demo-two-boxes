@@ -78,7 +78,7 @@ function PlaneMove(props) {
 
   return (
     <mesh ref={plane} rotation={[Math.PI / 2, 0, 0]} position={[0, -499, 0]}>
-      <planeBufferGeometry attach="geometry" args={[100, 100, 100]} />
+      <planeBufferGeometry attach="geometry" args={[100, 100]} />
       <meshBasicMaterial
         attach="material"
         map={circleMove}
