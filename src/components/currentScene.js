@@ -11,6 +11,8 @@ const CurrentScene = ({
   rotation,
   setShowBox,
   args,
+  scaleStart,
+  scaleEnd
 }) => {
   return (
     <Box
@@ -18,6 +20,8 @@ const CurrentScene = ({
       end={end}
       opacityStart={opacityStart}
       opacityEnd={opacityEnd}
+      scaleStart={scaleStart}
+      scaleEnd={scaleEnd}
       images={images}
       rotation={rotation}
       args={args}

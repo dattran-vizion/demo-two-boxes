@@ -10,6 +10,8 @@ const NextScene = ({
   images,
   rotation,
   args,
+  scaleStart,
+  scaleEnd
 }) => {
   return (
     <Box
@@ -17,6 +19,8 @@ const NextScene = ({
       end={end}
       opacityStart={opacityStart}
       opacityEnd={opacityEnd}
+      scaleStart={scaleStart}
+      scaleEnd={scaleEnd}
       images={images}
       rotation={rotation}
       args={args}
