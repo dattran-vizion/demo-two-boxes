@@ -20,8 +20,7 @@ function PlaneFixed(props) {
       <meshBasicMaterial
         attach="material"
         map={circleFixed}
-        transparent
-        opacity={1}
+        transparent={true}
         side={DoubleSide}
       />
     </mesh>

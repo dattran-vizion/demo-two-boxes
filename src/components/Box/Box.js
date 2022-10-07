@@ -17,19 +17,17 @@ function Box(props) {
     loop: false,
     delay: 2000,
     from: {
-      position: props.start,
       opacity: props.opacityStart,
       scale: props.scaleStart,
     },
     to: {
-      position: props.end,
       opacity: props.opacityEnd,
       scale: props.scaleEnd,
     },
     config: {
       duration: 1000,
     },
-    onRest: () => props.setShowBox(false),
+    // onRest: () => props.setShowBox(false),
   });
 
   const textures = useLoader(THREE.TextureLoader, images);
@@ -37,7 +35,7 @@ function Box(props) {
   return (
     <>
       <animated.mesh
-        position={spring.position}
+        position={[0, 0, 0]}
         rotation={props.rotation}
         scale={spring.scale}
       >
@@ -53,21 +51,21 @@ function Box(props) {
           />
         ))}
       </animated.mesh>
-      {/* 
-      <mesh position={[1000, 1000, 0]}>
-        <boxBufferGeometry attach="geometry" args={props.args} />
+
+      <mesh position={[0, 0, 0]}>
+        <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshStandardMaterial
           attach="material"
-          side={THREE.DoubleSide}
-          color="red"
-          opacity={0}
+          side={THREE.BackSide}
+          transparent
+          visible={false}
         />
-      </mesh> */}
 
-      {/* {hotspots.map((hotspot, index) => (
-        <PlaneFixed key={index} hotspot={hotspot} />
-      ))}
-      <PlaneMove /> */}
+        {hotspots.map((hotspot, index) => (
+          <PlaneFixed key={index} hotspot={hotspot} />
+        ))}
+        <PlaneMove />
+      </mesh>
     </>
   );
 }

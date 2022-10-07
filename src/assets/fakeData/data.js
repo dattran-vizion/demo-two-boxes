@@ -35,13 +35,6 @@ const fakeData = [
     hotspots: [
       {
         boxID: 1,
-        hotspot: [0, -499, 0],
-        rotation: [-Math.PI / 2, 0, 0],
-        scale: 5,
-        defaultRotation: [0, degToRad(-135), 0],
-      },
-      {
-        boxID: 2,
         hotspot: [-499, -120, -20],
         rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
