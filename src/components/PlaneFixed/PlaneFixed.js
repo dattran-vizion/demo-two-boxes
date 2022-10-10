@@ -7,11 +7,17 @@ import CircleFixed from "../../images/circleFixed.png";
 
 function PlaneFixed(props) {
   const { boxID, hotspot, rotation, scale } = props.hotspot;
+
+  console.log("boxID", boxID);
+  console.log("hotspot", hotspot);
+  console.log("rotation", rotation);
+  console.log("scale", scale);
+
   const circleFixed = useLoader(TextureLoader, CircleFixed);
 
   return (
     <mesh
-      onClick={() => props.setShowBoxIndex(boxID)}
+      onClick={() => props.handleSelectedHotspot()}
       rotation={rotation}
       position={hotspot}
       scale={scale}
@@ -20,8 +26,8 @@ function PlaneFixed(props) {
       <meshBasicMaterial
         attach="material"
         map={circleFixed}
-        transparent={true}
         side={DoubleSide}
+        transparent={true}
       />
     </mesh>
   );

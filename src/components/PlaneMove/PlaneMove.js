@@ -5,12 +5,12 @@ import { TextureLoader } from "three/src/loaders/TextureLoader.js";
 
 import CircleMove from "../../images/circleMove.png";
 
-function PlaneMove(props) {
+function PlaneMove({ boxWidth, ...props }) {
   const circleMove = useLoader(TextureLoader, CircleMove);
   const plane = useRef();
   const pointer = new Vector2();
   const { camera, raycaster, scene, size } = useThree();
-  const stayPosition = new Vector3(0, -500, 0);
+  const stayPosition = new Vector3(0, -boxWidth * 0.5, 0);
   let factorScale;
   let circlePointerMove = {};
   let isResponsive = useRef(false);
@@ -38,24 +38,26 @@ function PlaneMove(props) {
         circlePointerMove.y,
         circlePointerMove.z
       );
-      factorScale = 500 / stayPosition.distanceTo(plane.current.position);
+      factorScale =
+        (boxWidth * 0.5) / stayPosition.distanceTo(plane.current.position);
       factorScale = factorScale * factorScale * 1.1;
       plane.current.scale.set(factorScale, factorScale, factorScale);
     } else if (
-      circlePointerMove.z >= 500 ||
-      circlePointerMove.z <= -500 ||
-      circlePointerMove.x <= -500 ||
-      circlePointerMove.x >= 500
+      circlePointerMove.z >= boxWidth * 0.5 ||
+      circlePointerMove.z <= -boxWidth * 0.5 ||
+      circlePointerMove.x <= -boxWidth * 0.5 ||
+      circlePointerMove.x >= boxWidth * 0.5
     ) {
       plane.current.position.set(
         circlePointerMove.x,
         circlePointerMove.y,
         circlePointerMove.z
       );
-      factorScale = 500 / stayPosition.distanceTo(plane.current.position);
+      factorScale =
+        (boxWidth * 0.5) / stayPosition.distanceTo(plane.current.position);
       factorScale = factorScale * factorScale * 1.1;
       plane.current.scale.set(factorScale, factorScale, factorScale);
-    } else if (circlePointerMove.y <= -500) {
+    } else if (circlePointerMove.y <= -boxWidth * 0.5) {
       plane.current.position.set(
         circlePointerMove.x,
         circlePointerMove.y,
@@ -77,7 +79,11 @@ function PlaneMove(props) {
   window.addEventListener("mousemove", onPointerMove);
 
   return (
-    <mesh ref={plane} rotation={[Math.PI / 2, 0, 0]} position={[0, -500, 0]}>
+    <mesh
+      ref={plane}
+      rotation={[Math.PI / 2, 0, 0]}
+      position={[0, -boxWidth * 0.5 - 1, 0]}
+    >
       <planeBufferGeometry attach="geometry" args={[100, 100]} />
       <meshBasicMaterial
         attach="material"

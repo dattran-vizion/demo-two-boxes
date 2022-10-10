@@ -4,8 +4,9 @@ import React, { Suspense, useState, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 
 // import Box from "./components/Box/Box";
-// import CurrentScene from "./components/currentScene";
-// import NextScene from "./components/nextScene";
+import SceneHandler from "./components/SceneHandler";
+import CurrentScene from "./components/currentScene";
+import NextScene from "./components/nextScene";
 
 import CameraController from "./components/CameraController";
 import Scene from "./components/Scene";
@@ -43,24 +44,13 @@ export default function App() {
           opacityStart={0}
           opacityEnd={1}
           scaleStart={1}
-          scaleEnd={11 / 30}
+          scaleEnd={30 / 11}
           images={fakeData[1].images}
           rotation={[0, 0.85 * Math.PI, 0]}
           args={[3000, 3000, 3000]}
         /> */}
 
-        <Scene
-          scene="currentScene"
-          images={fakeData[idIndex].images}
-          rotation={[0, 0, 0]}
-          hotspots={fakeData[idIndex].hotspots}
-        />
-
-        {/* <Scene
-          scene="nextScene"
-          images={fakeData[idIndex + 1].images}
-          rotation={[0, 0.85 * Math.PI, 0]}
-        /> */}
+        <SceneHandler />
       </Suspense>
     </Canvas>
   );

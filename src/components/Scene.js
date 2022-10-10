@@ -1,36 +1,64 @@
+import React, { useState, useRef } from "react";
 import * as THREE from "three";
-import React, { useRef } from "react";
 import { useLoader } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 
 import PlaneFixed from "./PlaneFixed/PlaneFixed";
 import PlaneMove from "./PlaneMove/PlaneMove";
 
-import fakeData from "../assets/fakeData/data";
+function Scene(props) {
+  // const [showBoxIndex, setShowBoxIndex] = useState(1);
 
-export default function Scene(props) {
-  const mesh = useRef();
-  const allScenes = {
-    currentScene: new THREE.BoxGeometry(1100, 1100, 1100),
-    nextScene: new THREE.BoxGeometry(3000, 3000, 3000),
-  };
+  const [activeAnimation, setActiveAnimation] = useState(false);
+  const sceneData = props.scene;
+  const animation = props.animation;
 
-  const hotspots = props.hotspots;
-
-  const images = props.images;
+  const images = sceneData.sceneData.images;
   const textures = useLoader(THREE.TextureLoader, images);
+
+  const hotspots = sceneData.sceneData.hotspots;
+
+  const spring = useSpring({
+    // loop: false,
+    // delay: 2000,
+    // from: {
+    //   opacity: animation.opacityStart,
+    //   scale: animation.scaleStart,
+    // },
+    // to: {
+    //   opacity: animation.opacityEnd,
+    //   scale: animation.scaleEnd,
+    // },
+
+    opacity: !activeAnimation ? animation.opacityStart : animation.opacityEnd,
+    scale: !activeAnimation ? animation.scaleStart : animation.scaleEnd,
+    config: {
+      duration: 1000,
+    },
+    onRest: () => props.changeCurrentScene("nextScene"),
+  });
+
+  const handleSelectedHotspot = (index) => {
+    console.log("clicked");
+    setActiveAnimation(!activeAnimation);
+  };
 
   return (
     <>
-      <animated.mesh {...props} ref={mesh} rotation={props.rotation}>
-        <primitive object={allScenes[props.scene]} attach={"geometry"} />
+      <animated.mesh
+        position={[0, 0, 0]}
+        rotation={sceneData.rotation}
+        scale={spring.scale}
+      >
+        <boxBufferGeometry attach="geometry" args={sceneData.args} />
         {textures.map((texture, index) => (
-          <meshStandardMaterial
+          <animated.meshStandardMaterial
             key={index}
             attachArray="material"
             map={texture}
             side={THREE.DoubleSide}
             transparent
+            opacity={spring.opacity}
           />
         ))}
       </animated.mesh>
@@ -45,10 +73,16 @@ export default function Scene(props) {
         />
 
         {hotspots.map((hotspot, index) => (
-          <PlaneFixed key={index} hotspot={hotspot} />
+          <PlaneFixed
+            key={index}
+            hotspot={hotspot}
+            handleSelectedHotspot={handleSelectedHotspot}
+          />
         ))}
         <PlaneMove />
       </mesh>
     </>
   );
 }
+
+export default Scene;
