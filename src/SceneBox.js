@@ -3,45 +3,39 @@ import * as THREE from "three";
 import { useLoader } from "@react-three/fiber";
 import { useSpring, animated } from "@react-spring/three";
 
-import PlaneFixed from "./PlaneFixed/PlaneFixed";
-import PlaneMove from "./PlaneMove/PlaneMove";
+import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
+import PlaneMove from "./components/PlaneMove/PlaneMove";
 import { ANIMS } from "./anims.const";
 
-function SceneBox({ sceneData, anims, animCompleted, ...props }) {
-  // const [showBoxIndex, setShowBoxIndex] = useState(1);
-  const [springData, setSpringData] = useSpring({
-    opacity: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 0 : 1,
-    scale: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 10 : 1,
-  });
+function SceneBox({ sceneData, anims, showStep, ...props }) {
+  // const [springData, springApi] = useSpring(() => ({
+  //   opacity: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 0 : 1,
+  //   scale: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 10 : 1,
+  // }));
 
-  useEffect(() => {
-    const animPayload = {
-      config: {
-        duration: 1000,
-      },
-      onRest: () => {
-        if (anims === ANIMS.HIDE) {
-          setSpringData({
-            scale: 10,
-            opacity: 0,
-            config: { duration: 0 },
-          });
-        }
-        animCompleted();
-        setShowHotspot(true);
-      },
-    };
-    if (anims === ANIMS.SHOW) {
-      animPayload.opacity = 1;
-      animPayload.scale = 1;
-    } else if (anims === ANIMS.HIDE) {
-      animPayload.opacity = 0.3;
-    }
-    setSpringData(animPayload);
-  }, [anims]);
-
-  const [activeAnimation, setActiveAnimation] = useState(false);
-  //   const animation = props.animation;
+  // useEffect(() => {
+  //   if (anims === ANIMS.SHOW) {
+  //     springApi.start({
+  //       opacity: anims ? 1 : 0.3,
+  //       scale: 1,
+  //       config: {
+  //         duration: 1000,
+  //       },
+  //     });
+  //     springApi.stop();
+  //     // setShowHotspot(false);
+  //   } else if (anims === ANIMS.HIDE) {
+  //     springApi.start({
+  //       opacity: anims ? 0 : 1,
+  //       scale: anims ? 10 : 1,
+  //       config: {
+  //         duration: 1000,
+  //       },
+  //     });
+  //     // setShowHotspot(true);
+  //     springApi.stop();
+  //   }
+  // }, [anims]);
 
   const images = sceneData.images;
   const textures = useLoader(THREE.TextureLoader, images);
@@ -49,22 +43,8 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
   const hotspots = sceneData.hotspots;
   const [showHotspot, setShowHotspot] = useState(false);
 
-  //   const spring = useSpring({
-  //     opacity: !activeAnimation ? animation.opacityStart : animation.opacityEnd,
-  //     scale: !activeAnimation ? animation.scaleStart : animation.scaleEnd,
-  //     config: {
-  //       duration: 1000,
-  //     },
-  //     onRest: () => {
-  //         animCompleted();
-  //         props.changeCurrentScene("nextScene");
-  //         setShowHotspot(true);
-  //     },
-  //   });
-
-  const handleSelectedHotspot = (index) => {
-    console.log("clicked");
-    setActiveAnimation(!activeAnimation);
+  const handleSelectedHotspot = (sceneID) => {
+    props.onClickStep(sceneID);
   };
 
   return (
@@ -72,9 +52,9 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
       <animated.mesh
         position={[0, 0, 0]}
         rotation={[0, 0, 0]}
-        scale={springData.scale}
+        // scale={springData.scale}
       >
-        <boxBufferGeometry attach="geometry" args={[]} />
+        <boxBufferGeometry attach="geometry" args={[1100, 1100, 1100]} />
         {textures.map((texture, index) => (
           <animated.meshStandardMaterial
             key={index}
@@ -82,12 +62,12 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
             map={texture}
             side={THREE.DoubleSide}
             transparent
-            opacity={springData.opacity}
+            // opacity={springData.opacity}
           />
         ))}
       </animated.mesh>
 
-      {showHotspot ? (
+      {showStep && (
         <mesh position={[0, 0, 0]}>
           <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
           <meshStandardMaterial
@@ -106,7 +86,7 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
           ))}
           <PlaneMove boxWidth={1000} />
         </mesh>
-      ) : null}
+      )}
     </>
   );
 }

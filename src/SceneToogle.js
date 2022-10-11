@@ -8,24 +8,42 @@ const SceneToggle = ({ scenes }) => {
   const [animA, setAnimA] = useState(ANIMS.DEFAULT);
   const [animB, setAnimB] = useState(ANIMS.NONE);
   const [currScene, setCurrentScene] = useState("sceneA");
-  const handleClickStep = useCallback((targetScene) => {
-    if (currScene === 'sceneA') {
-        setAnimA(ANIMS.HIDE);
-        setAnimB(ANIMS.SHOW);
-        setSceneB(targetScene);
-        setCurrentScene('sceneB');
-    } else {
-        setAnimA(ANIMS.SHOW);
-        setAnimB(ANIMS.HIDE);
-        setSceneA(targetScene);
-        setCurrentScene('sceneA');
-    }
-  }, [currScene]);
+  const [showStep, setShowStep] = useState(true);
+
+  const handleClickStep = useCallback(
+    (sceneID) => {
+      if (currScene === "sceneA") {
+        // setAnimA(ANIMS.HIDE);
+        // setAnimB(ANIMS.SHOW);
+        setSceneB(scenes[sceneID]);
+        setCurrentScene("sceneB");
+        setShowStep(!showStep);
+      } else {
+        // setAnimA(ANIMS.SHOW);
+        // setAnimB(ANIMS.HIDE);
+        setSceneA(scenes[sceneID]);
+        setCurrentScene("sceneA");
+      }
+    },
+    [currScene]
+  );
 
   return (
     <>
-      <SceneBox sceneData={sceneA} anims={animA} onClickStep={handleClickStep} />
-      {sceneB && <SceneBox sceneData={sceneB} anims={animB} onClickStep={handleClickStep} />}
+      <SceneBox
+        sceneData={sceneA}
+        anims={animA}
+        onClickStep={handleClickStep}
+        showStep={showStep}
+      />
+      {sceneB && (
+        <SceneBox
+          sceneData={sceneB}
+          anims={animB}
+          onClickStep={handleClickStep}
+          showStep={!showStep}
+        />
+      )}
     </>
   );
 };

@@ -2,22 +2,18 @@ import React, { memo } from "react";
 import { DoubleSide } from "three";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader.js";
+import Scenes from "../../assets/fakeData/data";
 
 import CircleFixed from "../../images/circleFixed.png";
 
 function PlaneFixed(props) {
-  const { boxID, hotspot, rotation, scale } = props.hotspot;
-
-  console.log("boxID", boxID);
-  console.log("hotspot", hotspot);
-  console.log("rotation", rotation);
-  console.log("scale", scale);
+  const { sceneID, hotspot, rotation, scale } = props.hotspot;
 
   const circleFixed = useLoader(TextureLoader, CircleFixed);
 
   return (
     <mesh
-      onClick={() => props.handleSelectedHotspot()}
+      onClick={() => props.handleSelectedHotspot(sceneID)}
       rotation={rotation}
       position={hotspot}
       scale={scale}
