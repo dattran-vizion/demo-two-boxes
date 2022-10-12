@@ -2,7 +2,6 @@ import React, { memo } from "react";
 import { DoubleSide } from "three";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader.js";
-import Scenes from "../../assets/fakeData/data";
 
 import CircleFixed from "../../images/circleFixed.png";
 
@@ -13,7 +12,7 @@ function PlaneFixed(props) {
 
   return (
     <mesh
-      onClick={() => props.handleSelectedHotspot(sceneID)}
+      onClick={() => props.handleSelectedStep(sceneID)}
       rotation={rotation}
       position={hotspot}
       scale={scale}

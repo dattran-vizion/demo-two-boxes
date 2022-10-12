@@ -7,6 +7,9 @@ const CameraController = () => {
   useEffect(() => {
     const controls = new OrbitControls(camera, gl.domElement);
 
+    // controls.enableDamping = true;
+    controls.rotateSpeed = -0.5;
+
     controls.minDistance = 0;
     controls.maxDistance = 20000;
     return () => {

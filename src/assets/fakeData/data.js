@@ -29,12 +29,11 @@ export const TexturesLoader = (images) => {
 
 const fakeData = [
   {
-    id: 0,
-    name: "box1",
+    id: "box1",
     images: [img1, img2, img3, img4, img5, img6],
     hotspots: [
       {
-        sceneID: 1,
+        sceneID: "box2",
         hotspot: [-499, -120, -20],
         rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
@@ -43,33 +42,31 @@ const fakeData = [
     ],
   },
   {
-    id: 1,
-    name: "box2",
+    id: "box2",
     images: [img7, img8, img9, img10, img11, img12],
     hotspots: [
       {
-        sceneID: 0,
+        sceneID: "box1",
         hotspot: [-499, -200, 107],
         rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
         defaultRotation: [0, degToRad(-90), 0],
       },
-      {
-        sceneID: 2,
-        hotspot: [499, -216, -197],
-        rotation: [-Math.PI / 2, 0, 0],
-        scale: 7,
-        defaultRotation: [0, degToRad(180), 0],
-      },
+      // {
+      //   sceneID: "box3",
+      //   hotspot: [499, -216, -197],
+      //   rotation: [-Math.PI / 2, 0, 0],
+      //   scale: 7,
+      //   defaultRotation: [0, degToRad(180), 0],
+      // },
     ],
   },
   {
-    id: 2,
-    name: "box3",
+    id: "box3",
     images: [img13, img14, img15, img16, img17, img18],
     hotspots: [
       {
-        sceneID: 1,
+        sceneID: "box2",
         hotspot: [-360, -364, -499],
         rotation: [-Math.PI / 2, 0, 0],
         scale: 8,

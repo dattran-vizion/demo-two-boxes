@@ -1,93 +1,135 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
-import { useSpring, animated } from "@react-spring/three";
-
+import { useThree } from "@react-three/fiber";
+import { gsap } from "gsap";
 import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 import PlaneMove from "./components/PlaneMove/PlaneMove";
-import { ANIMS } from "./anims.const";
+// import { ANIMS } from "./anims.const";
 
-function SceneBox({ sceneData, anims, showStep, ...props }) {
-  // const [springData, springApi] = useSpring(() => ({
-  //   opacity: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 0 : 1,
-  //   scale: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 10 : 1,
-  // }));
+const createBox = (images) => {
+  const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
+  const materials = images.map((img) => {
+    const material = new THREE.MeshStandardMaterial({
+      side: THREE.BackSide,
+      transparent: true,
+      opacity: 0,
+      color: 0xffffff,
+    });
+    material.map = new THREE.TextureLoader().load(img);
+    return material;
+  });
+  const mesh = new THREE.Mesh(geometry, materials);
+  mesh.position.set(0, 0, 0);
+  mesh.rotation.set(0, 0, 0);
+  mesh.scale.set(10, 10, 10);
+  return mesh;
+};
 
-  // useEffect(() => {
-  //   if (anims === ANIMS.SHOW) {
-  //     springApi.start({
-  //       opacity: anims ? 1 : 0.3,
-  //       scale: 1,
-  //       config: {
-  //         duration: 1000,
-  //       },
-  //     });
-  //     springApi.stop();
-  //     // setShowHotspot(false);
-  //   } else if (anims === ANIMS.HIDE) {
-  //     springApi.start({
-  //       opacity: anims ? 0 : 1,
-  //       scale: anims ? 10 : 1,
-  //       config: {
-  //         duration: 1000,
-  //       },
-  //     });
-  //     // setShowHotspot(true);
-  //     springApi.stop();
-  //   }
-  // }, [anims]);
+const updateBox = (mesh, opacity, scale) => {
+  if (scale !== undefined) {
+    mesh.scale.set(scale, scale, scale);
+  }
+  if (opacity !== undefined) {
+    mesh.material.forEach((m) => {
+      m.opacity = opacity;
+      m.needsUpdate = true;
+    });
+  }
+};
 
-  const images = sceneData.images;
-  const textures = useLoader(THREE.TextureLoader, images);
+function SceneBox({ sceneData, showAnim, ...props }) {
+  const meshRef = useRef();
+  const { scene } = useThree();
+
+  useEffect(() => {
+    if (!meshRef.current) {
+      meshRef.current = createBox(sceneData.images);
+      scene.add(meshRef.current);
+    }
+  }, [scene, sceneData.images]);
+
+  const [showStep, setShowStep] = useState(false);
+
+  const isStepVisible = useMemo(
+    () => showAnim && showStep,
+    [showAnim, showStep]
+  );
+
+  // show
+  useEffect(() => {
+    if (showAnim) {
+      const animData = {
+        scale: 10,
+        opacity: 0,
+      };
+      gsap.to(animData, {
+        scale: 1,
+        opacity: 1,
+        duration: 5,
+        onUpdate: () => {
+          updateBox(meshRef.current, animData.opacity, animData.scale);
+        },
+        onComplete: () => {
+          setTimeout(() => setShowStep(true), 1000);
+        },
+      });
+    } else {
+      setShowStep(false);
+      const animData = { scale: 1, opacity: 1 };
+      gsap.to(animData, {
+        // scale: 10,
+        opacity: 0.3,
+        duration: 3,
+        onUpdate: () => {
+          updateBox(meshRef.current, animData.opacity);
+        },
+        onComplete: () => {
+          updateBox(meshRef.current, 0, 10);
+        },
+      });
+    }
+  }, [showAnim]);
 
   const hotspots = sceneData.hotspots;
-  const [showHotspot, setShowHotspot] = useState(false);
 
-  const handleSelectedHotspot = (sceneID) => {
+  const handleSelectedStep = (sceneID) => {
+    console.log("clicked");
     props.onClickStep(sceneID);
+    // api.start({
+    //   opacity: 0.3,
+    // });
+    // api.start({
+    //   opacity: 0,
+    //   scale: 10,
+    //   config: { duration: 0 },
+    // });
+    console.log("done hide");
   };
 
   return (
-    <>
-      <animated.mesh
-        position={[0, 0, 0]}
-        rotation={[0, 0, 0]}
-        // scale={springData.scale}
-      >
-        <boxBufferGeometry attach="geometry" args={[1100, 1100, 1100]} />
-        {textures.map((texture, index) => (
-          <animated.meshStandardMaterial
-            key={index}
-            attachArray="material"
-            map={texture}
-            side={THREE.DoubleSide}
-            transparent
-            // opacity={springData.opacity}
-          />
-        ))}
-      </animated.mesh>
-
-      {showStep && (
-        <mesh position={[0, 0, 0]}>
-          <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
-          <meshStandardMaterial
-            attach="material"
-            side={THREE.BackSide}
-            transparent
-            visible={false}
-          />
-
-          {hotspots.map((hotspot, index) => (
-            <PlaneFixed
-              key={index}
-              hotspot={hotspot}
-              handleSelectedHotspot={handleSelectedHotspot}
-            />
-          ))}
-          <PlaneMove boxWidth={1000} />
-        </mesh>
-      )}
-    </>
+    <group>
+      <mesh position={[0, 0, 0]}>
+        <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
+        <meshStandardMaterial
+          attach="material"
+          side={THREE.BackSide}
+          transparent
+          visible={false}
+        />
+        {isStepVisible ? (
+          <>
+            {hotspots.map((hotspot, index) => (
+              <PlaneFixed
+                key={index}
+                hotspot={hotspot}
+                handleSelectedStep={handleSelectedStep}
+              />
+            ))}
+            <PlaneMove boxWidth={1000} />
+          </>
+        ) : null}
+      </mesh>
+    </group>
   );
 }
 

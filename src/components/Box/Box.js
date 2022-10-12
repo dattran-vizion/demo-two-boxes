@@ -52,7 +52,7 @@ function Box(props) {
         ))}
       </animated.mesh>
 
-      <mesh position={[0, 0, 0]}>
+      {/* <mesh position={[0, 0, 0]}>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshStandardMaterial
           attach="material"
@@ -65,7 +65,7 @@ function Box(props) {
           <PlaneFixed key={index} hotspot={hotspot} />
         ))}
         <PlaneMove />
-      </mesh>
+      </mesh> */}
     </>
   );
 }
