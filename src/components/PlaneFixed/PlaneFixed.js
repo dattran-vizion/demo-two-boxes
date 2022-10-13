@@ -12,7 +12,7 @@ function PlaneFixed(props) {
 
   return (
     <mesh
-      onClick={() => props.handleSelectedStep(sceneID)}
+      onClick={() => props.handleSelectedStep(sceneID, hotspot)}
       rotation={rotation}
       position={hotspot}
       scale={scale}

@@ -52,13 +52,13 @@ const fakeData = [
         scale: 6,
         defaultRotation: [0, degToRad(-90), 0],
       },
-      // {
-      //   sceneID: "box3",
-      //   hotspot: [499, -216, -197],
-      //   rotation: [-Math.PI / 2, 0, 0],
-      //   scale: 7,
-      //   defaultRotation: [0, degToRad(180), 0],
-      // },
+      {
+        sceneID: "box3",
+        hotspot: [499, -216, -197],
+        rotation: [-Math.PI / 2, 0, 0],
+        scale: 7,
+        defaultRotation: [0, degToRad(180), 0],
+      },
     ],
   },
   {

@@ -6,7 +6,13 @@ import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 import PlaneMove from "./components/PlaneMove/PlaneMove";
 // import { ANIMS } from "./anims.const";
 
-const createBox = (images) => {
+const SCALE_VARIANTS = {
+  DEFAULT: 1,
+  BIG: 10,
+};
+
+const createBox = (images, position, rotation) => {
+  let [x, y, z] = position;
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshStandardMaterial({
@@ -19,15 +25,24 @@ const createBox = (images) => {
     return material;
   });
   const mesh = new THREE.Mesh(geometry, materials);
-  mesh.position.set(0, 0, 0);
-  mesh.rotation.set(0, 0, 0);
+  mesh.position.x = x;
+  mesh.position.y = y;
+  mesh.position.z = z;
+  // mesh.position.set(0, 0, 0);
+  mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
   mesh.scale.set(10, 10, 10);
   return mesh;
 };
 
-const updateBox = (mesh, opacity, scale) => {
+const updateBox = (mesh, opacity, scale, position) => {
   if (scale !== undefined) {
     mesh.scale.set(scale, scale, scale);
+  }
+  if (position !== undefined) {
+    const [x, y, z] = position;
+    mesh.position.x = x;
+    mesh.position.y = y;
+    mesh.position.z = z;
   }
   if (opacity !== undefined) {
     mesh.material.forEach((m) => {
@@ -37,13 +52,35 @@ const updateBox = (mesh, opacity, scale) => {
   }
 };
 
-function SceneBox({ sceneData, showAnim, ...props }) {
+const updateBoxImages = (mesh, images) => {
+  mesh.material.forEach((m, index) => {
+    m.map = new THREE.TextureLoader().load(images[index]);
+    m.needsUpdate = true;
+  });
+  return mesh;
+};
+
+function SceneBox({
+  sceneData,
+  showAnim,
+  rotation,
+  position,
+  positionNext,
+  ...props
+}) {
   const meshRef = useRef();
   const { scene } = useThree();
 
+  console.log("position", position);
+
   useEffect(() => {
     if (!meshRef.current) {
-      meshRef.current = createBox(sceneData.images);
+      meshRef.current = createBox(sceneData.images, position, rotation);
+      scene.add(meshRef.current);
+    }
+    // Update the pictures in the scene box
+    if (meshRef.current) {
+      meshRef.current = updateBoxImages(meshRef.current, sceneData.images);
       scene.add(meshRef.current);
     }
   }, [scene, sceneData.images]);
@@ -59,15 +96,23 @@ function SceneBox({ sceneData, showAnim, ...props }) {
   useEffect(() => {
     if (showAnim) {
       const animData = {
-        scale: 10,
-        opacity: 0,
+        scale: SCALE_VARIANTS.BIG,
+        opacity: 0.7,
+        positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
+        positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
       };
       gsap.to(animData, {
-        scale: 1,
+        scale: SCALE_VARIANTS.DEFAULT,
         opacity: 1,
+        positionX: 0,
+        positionZ: 0,
         duration: 5,
         onUpdate: () => {
-          updateBox(meshRef.current, animData.opacity, animData.scale);
+          updateBox(meshRef.current, animData.opacity, animData.scale, [
+            animData.positionX,
+            0,
+            animData.positionZ,
+          ]);
         },
         onComplete: () => {
           setTimeout(() => setShowStep(true), 1000);
@@ -75,13 +120,19 @@ function SceneBox({ sceneData, showAnim, ...props }) {
       });
     } else {
       setShowStep(false);
-      const animData = { scale: 1, opacity: 1 };
+      const animData = { scale: 1, opacity: 1, positionX: 0, positionZ: 0 };
       gsap.to(animData, {
-        // scale: 10,
-        opacity: 0.3,
-        duration: 3,
+        opacity: 0.7,
+        positionX: positionNext[0] * -1,
+        positionZ: positionNext[2] * -1,
+        duration: 2,
         onUpdate: () => {
-          updateBox(meshRef.current, animData.opacity);
+          // updateBox(meshRef.current, animData.opacity);
+          updateBox(meshRef.current, animData.opacity, undefined, [
+            animData.positionX,
+            0,
+            animData.positionZ,
+          ]);
         },
         onComplete: () => {
           updateBox(meshRef.current, 0, 10);
@@ -92,23 +143,15 @@ function SceneBox({ sceneData, showAnim, ...props }) {
 
   const hotspots = sceneData.hotspots;
 
-  const handleSelectedStep = (sceneID) => {
+  const handleSelectedStep = (sceneID, stepPos) => {
     console.log("clicked");
-    props.onClickStep(sceneID);
-    // api.start({
-    //   opacity: 0.3,
-    // });
-    // api.start({
-    //   opacity: 0,
-    //   scale: 10,
-    //   config: { duration: 0 },
-    // });
+    props.onClickStep(sceneID, stepPos);
     console.log("done hide");
   };
 
   return (
     <group>
-      <mesh position={[0, 0, 0]}>
+      <mesh rotation={rotation}>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshStandardMaterial
           attach="material"

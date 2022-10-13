@@ -12,11 +12,12 @@ import "./styles.css";
 export default function App() {
   return (
     <Canvas
-      camera={{ position: [10, 0, 0], fov: 60, near: 10, far: 5000 }}
+      camera={{ position: [10, 0, 0], fov: 60, near: 10, far: 15000 }}
       // camera={{ position: [3000, 3000, 3000], fov: 60, near: 10, far: 15000 }}
     >
       <CameraController />
       <ambientLight />
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <Suspense fallback={null}>
         <SceneToggle scenes={fakeData} />
       </Suspense>

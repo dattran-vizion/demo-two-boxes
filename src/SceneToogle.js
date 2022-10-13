@@ -1,29 +1,31 @@
 import React, { useCallback, useState } from "react";
+// import * as THREE from "three";
+// import { useThree } from "@react-three/fiber";
+
 import SceneBox from "./SceneBox";
-import { ANIMS } from "./anims.const";
 
 const SceneToggle = ({ scenes }) => {
   const [sceneA, setSceneA] = useState(scenes[0]);
   const [sceneB, setSceneB] = useState(null);
-  // const [animA, setAnimA] = useState(ANIMS.DEFAULT);
-  // const [animB, setAnimB] = useState(ANIMS.NONE);
+
   const [showAnim, setShowAnim] = useState(true);
   const [currScene, setCurrentScene] = useState("sceneA");
+  const [sceneAPos, setSceneAPos] = useState([0, 0, 0]);
+  const [sceneBPos, setSceneBPos] = useState([0, 0, 0]);
+
   const handleClickStep = useCallback(
-    (sceneID) => {
+    (sceneID, stepPos) => {
       const targetScene = scenes.find((scene) => scene.id === sceneID);
-      setShowAnim(!showAnim);
       if (currScene === "sceneA") {
-        // setAnimA(ANIMS.HIDE);
-        // setAnimB(ANIMS.SHOW);
+        setSceneBPos([...stepPos]);
         setSceneB(targetScene);
         setCurrentScene("sceneB");
       } else {
-        // setAnimA(ANIMS.SHOW);
-        // setAnimB(ANIMS.HIDE);
+        setSceneAPos([...stepPos]);
         setSceneA(targetScene);
         setCurrentScene("sceneA");
       }
+      setShowAnim(!showAnim);
     },
     [currScene, showAnim, scenes]
   );
@@ -33,12 +35,18 @@ const SceneToggle = ({ scenes }) => {
       <SceneBox
         sceneData={sceneA}
         showAnim={showAnim}
+        rotation={[0, 0, 0]}
+        position={sceneAPos}
+        positionNext={sceneBPos}
         onClickStep={handleClickStep}
       />
       {sceneB && (
         <SceneBox
           sceneData={sceneB}
           showAnim={!showAnim}
+          rotation={[0, -Math.PI, 0]}
+          position={sceneBPos}
+          positionNext={sceneAPos}
           onClickStep={handleClickStep}
         />
       )}
