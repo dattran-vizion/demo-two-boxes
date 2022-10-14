@@ -43,8 +43,64 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
   const [activeAnimation, setActiveAnimation] = useState(false);
   //   const animation = props.animation;
 
+<<<<<<< Updated upstream
   const images = sceneData.images;
   const textures = useLoader(THREE.TextureLoader, images);
+=======
+  const isStepVisible = useMemo(
+    () => showAnim && showStep,
+    [showAnim, showStep]
+  );
+
+  // show
+  useEffect(() => {
+    if (showAnim) {
+      const animData = {
+        scale: SCALE_VARIANTS.BIG,
+        opacity: 0.7,
+        positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
+        positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
+      };
+      gsap.to(animData, {
+        scale: SCALE_VARIANTS.DEFAULT,
+        opacity: 1,
+        positionX: 0,
+        positionZ: 0,
+        duration: 2,
+        onUpdate: () => {
+          updateBox(meshRef.current, animData.opacity, animData.scale, [
+            animData.positionX,
+            0,
+            animData.positionZ,
+          ]);
+        },
+        onComplete: () => {
+          setTimeout(() => setShowStep(true), 1000);
+        },
+      });
+    } else {
+      setShowStep(false);
+      const animData = { scale: 1, opacity: 1, positionX: 0, positionZ: 0 };
+      gsap.to(animData, {
+        opacity: 0.7,
+        positionX: positionNext[0] * -0.7,
+        positionZ: positionNext[2] * -0.7,
+        duration: 1,
+        onUpdate: () => {
+          // updateBox(meshRef.current, animData.opacity);
+          updateBox(meshRef.current, animData.opacity, undefined, [
+            animData.positionX,
+            0,
+            animData.positionZ,
+          ]);
+        },
+        onComplete: () => {
+          updateBox(meshRef.current, 0, 10);
+        },
+      });
+    }
+  }, [showAnim]);
+>>>>>>> Stashed changes
 
   const hotspots = sceneData.hotspots;
   const [showHotspot, setShowHotspot] = useState(false);
