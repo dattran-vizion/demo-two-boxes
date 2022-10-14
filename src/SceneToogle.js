@@ -1,31 +1,55 @@
 import React, { useCallback, useState } from "react";
+// import * as THREE from "three";
+// import { useThree } from "@react-three/fiber";
+
 import SceneBox from "./SceneBox";
-import { ANIMS } from "./anims.const";
 
 const SceneToggle = ({ scenes }) => {
   const [sceneA, setSceneA] = useState(scenes[0]);
   const [sceneB, setSceneB] = useState(null);
-  const [animA, setAnimA] = useState(ANIMS.DEFAULT);
-  const [animB, setAnimB] = useState(ANIMS.NONE);
+
+  const [showAnim, setShowAnim] = useState(true);
   const [currScene, setCurrentScene] = useState("sceneA");
-  const handleClickStep = useCallback((targetScene) => {
-    if (currScene === 'sceneA') {
-        setAnimA(ANIMS.HIDE);
-        setAnimB(ANIMS.SHOW);
+  const [sceneAPos, setSceneAPos] = useState([0, 0, 0]);
+  const [sceneBPos, setSceneBPos] = useState([0, 0, 0]);
+
+  const handleClickStep = useCallback(
+    (sceneID, stepPos) => {
+      const targetScene = scenes.find((scene) => scene.id === sceneID);
+      if (currScene === "sceneA") {
+        setSceneBPos([...stepPos]);
         setSceneB(targetScene);
-        setCurrentScene('sceneB');
-    } else {
-        setAnimA(ANIMS.SHOW);
-        setAnimB(ANIMS.HIDE);
+        setCurrentScene("sceneB");
+      } else {
+        setSceneAPos([...stepPos]);
         setSceneA(targetScene);
-        setCurrentScene('sceneA');
-    }
-  }, [currScene]);
+        setCurrentScene("sceneA");
+      }
+      setShowAnim(!showAnim);
+    },
+    [currScene, showAnim, scenes]
+  );
 
   return (
     <>
-      <SceneBox sceneData={sceneA} anims={animA} onClickStep={handleClickStep} />
-      {sceneB && <SceneBox sceneData={sceneB} anims={animB} onClickStep={handleClickStep} />}
+      <SceneBox
+        sceneData={sceneA}
+        showAnim={showAnim}
+        rotation={[0, 0, 0]}
+        position={sceneAPos}
+        positionNext={sceneBPos}
+        onClickStep={handleClickStep}
+      />
+      {sceneB && (
+        <SceneBox
+          sceneData={sceneB}
+          showAnim={!showAnim}
+          rotation={[0, -Math.PI, 0]}
+          position={sceneBPos}
+          positionNext={sceneAPos}
+          onClickStep={handleClickStep}
+        />
+      )}
     </>
   );
 };

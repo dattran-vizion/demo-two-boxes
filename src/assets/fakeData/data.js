@@ -34,13 +34,8 @@ const fakeData = [
     images: [img1, img2, img3, img4, img5, img6],
     hotspots: [
       {
-<<<<<<< Updated upstream
-        boxID: 1,
-        hotspot: [-499, -120, -20],
-=======
         sceneID: "box2",
         position: [-499, -120, -20],
->>>>>>> Stashed changes
         rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
         defaultRotation: [degToRad(-45), degToRad(300), 0],
@@ -54,26 +49,16 @@ const fakeData = [
     images: [img7, img8, img9, img10, img11, img12],
     hotspots: [
       {
-<<<<<<< Updated upstream
-        boxID: 1,
-        hotspot: [-499, -200, 107],
-=======
         sceneID: "box1",
         position: [-499, -200, 107],
->>>>>>> Stashed changes
         rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
         defaultRotation: [0, degToRad(-90), 0],
         viewpoint: [0, 0, 0],
       },
       {
-<<<<<<< Updated upstream
-        boxID: 3,
-        hotspot: [499, -216, -197],
-=======
         sceneID: "box3",
         position: [499, -216, -197],
->>>>>>> Stashed changes
         rotation: [-Math.PI / 2, 0, 0],
         scale: 7,
         defaultRotation: [0, degToRad(180), 0],
@@ -87,13 +72,8 @@ const fakeData = [
     images: [img13, img14, img15, img16, img17, img18],
     hotspots: [
       {
-<<<<<<< Updated upstream
-        boxID: 2,
-        hotspot: [-360, -364, -499],
-=======
         sceneID: "box2",
         position: [-360, -364, -499],
->>>>>>> Stashed changes
         rotation: [-Math.PI / 2, 0, 0],
         scale: 8,
         defaultRotation: [0, degToRad(120), 0],

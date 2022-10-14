@@ -1,52 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useLoader } from "@react-three/fiber";
-import { useSpring, animated } from "@react-spring/three";
+import { useThree } from "@react-three/fiber";
+import { gsap } from "gsap";
+import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
+import PlaneMove from "./components/PlaneMove/PlaneMove";
+// import { ANIMS } from "./anims.const";
 
-import PlaneFixed from "./PlaneFixed/PlaneFixed";
-import PlaneMove from "./PlaneMove/PlaneMove";
-import { ANIMS } from "./anims.const";
+const SCALE_VARIANTS = {
+  DEFAULT: 1,
+  BIG: 10,
+};
 
-function SceneBox({ sceneData, anims, animCompleted, ...props }) {
-  // const [showBoxIndex, setShowBoxIndex] = useState(1);
-  const [springData, setSpringData] = useSpring({
-    opacity: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 0 : 1,
-    scale: anims === ANIMS.DEFAULT ? 1 : anims === ANIMS.SHOW ? 10 : 1,
+const createBox = (images, position, rotation) => {
+  let [x, y, z] = position;
+  const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
+  const materials = images.map((img) => {
+    const material = new THREE.MeshStandardMaterial({
+      side: THREE.BackSide,
+      transparent: true,
+      opacity: 0,
+      color: 0xffffff,
+    });
+    material.map = new THREE.TextureLoader().load(img);
+    return material;
   });
+  const mesh = new THREE.Mesh(geometry, materials);
+  mesh.position.x = x;
+  mesh.position.y = y;
+  mesh.position.z = z;
+  // mesh.position.set(0, 0, 0);
+  mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
+  mesh.scale.set(10, 10, 10);
+  return mesh;
+};
+
+const updateBox = (mesh, opacity, scale, position) => {
+  if (scale !== undefined) {
+    mesh.scale.set(scale, scale, scale);
+  }
+  if (position !== undefined) {
+    const [x, y, z] = position;
+    mesh.position.x = x;
+    mesh.position.y = y;
+    mesh.position.z = z;
+  }
+  if (opacity !== undefined) {
+    mesh.material.forEach((m) => {
+      m.opacity = opacity;
+      m.needsUpdate = true;
+    });
+  }
+};
+
+const updateBoxImages = (mesh, images) => {
+  mesh.material.forEach((m, index) => {
+    m.map = new THREE.TextureLoader().load(images[index]);
+    m.needsUpdate = true;
+  });
+  return mesh;
+};
+
+function SceneBox({
+  sceneData,
+  showAnim,
+  rotation,
+  position,
+  positionNext,
+  ...props
+}) {
+  const meshRef = useRef();
+  const { scene } = useThree();
+
+  console.log("position", position);
 
   useEffect(() => {
-    const animPayload = {
-      config: {
-        duration: 1000,
-      },
-      onRest: () => {
-        if (anims === ANIMS.HIDE) {
-          setSpringData({
-            scale: 10,
-            opacity: 0,
-            config: { duration: 0 },
-          });
-        }
-        animCompleted();
-        setShowHotspot(true);
-      },
-    };
-    if (anims === ANIMS.SHOW) {
-      animPayload.opacity = 1;
-      animPayload.scale = 1;
-    } else if (anims === ANIMS.HIDE) {
-      animPayload.opacity = 0.3;
+    if (!meshRef.current) {
+      meshRef.current = createBox(sceneData.images, position, rotation);
+      scene.add(meshRef.current);
     }
-    setSpringData(animPayload);
-  }, [anims]);
+    // Update the pictures in the scene box
+    if (meshRef.current) {
+      meshRef.current = updateBoxImages(meshRef.current, sceneData.images);
+      scene.add(meshRef.current);
+    }
+  }, [scene, sceneData.images]);
 
-  const [activeAnimation, setActiveAnimation] = useState(false);
-  //   const animation = props.animation;
+  const [showStep, setShowStep] = useState(false);
 
-<<<<<<< Updated upstream
-  const images = sceneData.images;
-  const textures = useLoader(THREE.TextureLoader, images);
-=======
   const isStepVisible = useMemo(
     () => showAnim && showStep,
     [showAnim, showStep]
@@ -66,7 +106,7 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 2,
+        duration: 5,
         onUpdate: () => {
           updateBox(meshRef.current, animData.opacity, animData.scale, [
             animData.positionX,
@@ -85,7 +125,7 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
         opacity: 0.7,
         positionX: positionNext[0] * -0.7,
         positionZ: positionNext[2] * -0.7,
-        duration: 1,
+        duration: 2,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [
@@ -100,70 +140,39 @@ function SceneBox({ sceneData, anims, animCompleted, ...props }) {
       });
     }
   }, [showAnim]);
->>>>>>> Stashed changes
 
   const hotspots = sceneData.hotspots;
-  const [showHotspot, setShowHotspot] = useState(false);
 
-  //   const spring = useSpring({
-  //     opacity: !activeAnimation ? animation.opacityStart : animation.opacityEnd,
-  //     scale: !activeAnimation ? animation.scaleStart : animation.scaleEnd,
-  //     config: {
-  //       duration: 1000,
-  //     },
-  //     onRest: () => {
-  //         animCompleted();
-  //         props.changeCurrentScene("nextScene");
-  //         setShowHotspot(true);
-  //     },
-  //   });
-
-  const handleSelectedHotspot = (index) => {
+  const handleSelectedStep = (sceneID, stepPos) => {
     console.log("clicked");
-    setActiveAnimation(!activeAnimation);
+    props.onClickStep(sceneID, stepPos);
+    console.log("done hide");
   };
 
   return (
-    <>
-      <animated.mesh
-        position={[0, 0, 0]}
-        rotation={[0, 0, 0]}
-        scale={springData.scale}
-      >
-        <boxBufferGeometry attach="geometry" args={[]} />
-        {textures.map((texture, index) => (
-          <animated.meshStandardMaterial
-            key={index}
-            attachArray="material"
-            map={texture}
-            side={THREE.DoubleSide}
-            transparent
-            opacity={springData.opacity}
-          />
-        ))}
-      </animated.mesh>
-
-      {showHotspot ? (
-        <mesh position={[0, 0, 0]}>
-          <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
-          <meshStandardMaterial
-            attach="material"
-            side={THREE.BackSide}
-            transparent
-            visible={false}
-          />
-
-          {hotspots.map((hotspot, index) => (
-            <PlaneFixed
-              key={index}
-              hotspot={hotspot}
-              handleSelectedHotspot={handleSelectedHotspot}
-            />
-          ))}
-          <PlaneMove boxWidth={1000} />
-        </mesh>
-      ) : null}
-    </>
+    <group>
+      <mesh rotation={rotation}>
+        <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
+        <meshStandardMaterial
+          attach="material"
+          side={THREE.BackSide}
+          transparent
+          visible={false}
+        />
+        {isStepVisible ? (
+          <>
+            {hotspots.map((hotspot, index) => (
+              <PlaneFixed
+                key={index}
+                hotspot={hotspot}
+                handleSelectedStep={handleSelectedStep}
+              />
+            ))}
+            <PlaneMove boxWidth={1000} />
+          </>
+        ) : null}
+      </mesh>
+    </group>
   );
 }
 
