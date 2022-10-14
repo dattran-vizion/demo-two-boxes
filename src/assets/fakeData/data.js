@@ -29,8 +29,7 @@ export const TexturesLoader = (images) => {
 
 const fakeData = [
   {
-    id: 1,
-    name: "box1",
+    id: "box1",
     images: [img1, img2, img3, img4, img5, img6],
     hotspots: [
       {
@@ -44,8 +43,7 @@ const fakeData = [
     ],
   },
   {
-    id: 2,
-    name: "box2",
+    id: "box2",
     images: [img7, img8, img9, img10, img11, img12],
     hotspots: [
       {
@@ -67,8 +65,7 @@ const fakeData = [
     ],
   },
   {
-    id: 3,
-    name: "box3",
+    id: "box3",
     images: [img13, img14, img15, img16, img17, img18],
     hotspots: [
       {
@@ -81,10 +78,11 @@ const fakeData = [
       },
       {
         boxID: 3,
-        hotspot: [0, -499, 0],
+        position: [0, -499, 0],
         rotation: [-Math.PI / 2, 0, 0],
         scale: 5,
         defaultRotation: [0, degToRad(15), 0],
+        viewpoint: [0, 0, 0],
       },
     ],
   },
