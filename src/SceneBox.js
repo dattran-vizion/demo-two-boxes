@@ -123,8 +123,8 @@ function SceneBox({
       const animData = { scale: 1, opacity: 1, positionX: 0, positionZ: 0 };
       gsap.to(animData, {
         opacity: 0.7,
-        positionX: positionNext[0] * -1,
-        positionZ: positionNext[2] * -1,
+        positionX: positionNext[0] * -0.7,
+        positionZ: positionNext[2] * -0.7,
         duration: 2,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);

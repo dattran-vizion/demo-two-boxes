@@ -6,15 +6,15 @@ import { TextureLoader } from "three/src/loaders/TextureLoader.js";
 import CircleFixed from "../../images/circleFixed.png";
 
 function PlaneFixed(props) {
-  const { sceneID, hotspot, rotation, scale } = props.hotspot;
+  const { sceneID, position, rotation, scale } = props.hotspot;
 
   const circleFixed = useLoader(TextureLoader, CircleFixed);
 
   return (
     <mesh
-      onClick={() => props.handleSelectedStep(sceneID, hotspot)}
+      onClick={() => props.handleSelectedStep(sceneID, position)}
       rotation={rotation}
-      position={hotspot}
+      position={position}
       scale={scale}
     >
       <planeBufferGeometry attach="geometry" args={[10, 10]} />
