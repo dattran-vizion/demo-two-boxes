@@ -13,10 +13,11 @@ function PlaneFixed(props) {
   return (
     <mesh
       onClick={() => props.handleSelectedStep(sceneID, position)}
-      rotation={rotation}
+      rotation={[-Math.PI / 2, 0, 0]}
       position={position}
       scale={scale}
     >
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <planeBufferGeometry attach="geometry" args={[10, 10]} />
       <meshBasicMaterial
         attach="material"

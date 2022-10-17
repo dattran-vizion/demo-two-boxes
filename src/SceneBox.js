@@ -1,42 +1,57 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
+import { GUI } from "three/examples/jsm/libs/dat.gui.module";
+import { useThree, useLoader } from "@react-three/fiber";
 import { gsap } from "gsap";
 import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 import PlaneMove from "./components/PlaneMove/PlaneMove";
-// import { ANIMS } from "./anims.const";
 
 const SCALE_VARIANTS = {
   DEFAULT: 1,
   BIG: 10,
 };
 
+const loader = new THREE.TextureLoader();
+
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
-    const material = new THREE.MeshStandardMaterial({
+    const material = new THREE.MeshPhongMaterial({
       side: THREE.BackSide,
       transparent: true,
       opacity: 0,
-      color: 0xffffff,
     });
-    material.map = new THREE.TextureLoader().load(img);
+    // material.map = loader.load(img, (texture) => {
+    //   texture.encoding = THREE.sRGBEncoding;
+    // });
+    // material.map
     return material;
   });
   const mesh = new THREE.Mesh(geometry, materials);
   mesh.position.x = x;
   mesh.position.y = y;
   mesh.position.z = z;
-  // mesh.position.set(0, 0, 0);
   mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
-  mesh.scale.set(10, 10, 10);
+  mesh.scale.set(
+    -1 * SCALE_VARIANTS.BIG,
+    SCALE_VARIANTS.BIG,
+    SCALE_VARIANTS.BIG
+  ); // Texture reversed on the x axis
+
+  const gui = new GUI();
+  const sceneFolder = gui.addFolder("Scene");
+  sceneFolder.add(mesh.rotation, "x", -Math.PI, Math.PI, 0.01);
+  sceneFolder.add(mesh.rotation, "y", -Math.PI, Math.PI, 0.01);
+  sceneFolder.add(mesh.rotation, "z", -Math.PI, Math.PI, 0.01);
+  sceneFolder.open();
   return mesh;
 };
 
 const updateBox = (mesh, opacity, scale, position) => {
   if (scale !== undefined) {
-    mesh.scale.set(scale, scale, scale);
+    // Texture reversed on the x axis
+    mesh.scale.set(-scale, scale, scale);
   }
   if (position !== undefined) {
     const [x, y, z] = position;
@@ -69,9 +84,7 @@ function SceneBox({
   ...props
 }) {
   const meshRef = useRef();
-  const { scene } = useThree();
-
-  console.log("position", position);
+  const { gl, scene } = useThree();
 
   useEffect(() => {
     if (!meshRef.current) {
@@ -83,6 +96,7 @@ function SceneBox({
       meshRef.current = updateBoxImages(meshRef.current, sceneData.images);
       scene.add(meshRef.current);
     }
+    // gl.gammaOutput = true;
   }, [scene, sceneData.images]);
 
   const [showStep, setShowStep] = useState(false);
@@ -149,11 +163,27 @@ function SceneBox({
     console.log("done hide");
   };
 
+  const images = sceneData.images;
+  const textures = useLoader(THREE.TextureLoader, images);
+
   return (
     <group>
+      {/* <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
+        <boxBufferGeometry attach="geometry" args={[1100, 1100, 1100]} />
+        {textures.map((texture, index) => (
+          <meshPhongMaterial
+            key={index}
+            attachArray="material"
+            map={texture}
+            side={THREE.DoubleSide}
+            transparent
+            opacity={1}
+          />
+        ))}
+      </mesh> */}
       <mesh rotation={rotation}>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
-        <meshStandardMaterial
+        <meshBasicMaterial
           attach="material"
           side={THREE.BackSide}
           transparent

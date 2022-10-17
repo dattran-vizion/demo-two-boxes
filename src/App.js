@@ -16,7 +16,7 @@ export default function App() {
       // camera={{ position: [3000, 3000, 3000], fov: 60, near: 10, far: 15000 }}
     >
       <CameraController />
-      <ambientLight />
+      <ambientLight intensity={0.8} />
       {/* <axesHelper args={[100, 100, 100]} /> */}
       <Suspense fallback={null}>
         <SceneToggle scenes={fakeData} />

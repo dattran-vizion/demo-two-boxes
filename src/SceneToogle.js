@@ -44,7 +44,7 @@ const SceneToggle = ({ scenes }) => {
         <SceneBox
           sceneData={sceneB}
           showAnim={!showAnim}
-          rotation={[0, -Math.PI, 0]}
+          rotation={[0, 0, 0]}
           position={sceneBPos}
           positionNext={sceneAPos}
           onClickStep={handleClickStep}

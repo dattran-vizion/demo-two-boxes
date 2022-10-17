@@ -1,23 +1,30 @@
-import img1 from "../../images/box1/px_1.jpg";
-import img2 from "../../images/box1/nx_1.jpg";
-import img3 from "../../images/box1/py_1.jpg";
-import img4 from "../../images/box1/ny_1.jpg";
-import img5 from "../../images/box1/pz_1.jpg";
-import img6 from "../../images/box1/nz_1.jpg";
+import img1 from "../../images/box1/px.png";
+import img2 from "../../images/box1/nx.png";
+import img3 from "../../images/box1/py.png";
+import img4 from "../../images/box1/ny.png";
+import img5 from "../../images/box1/pz.png";
+import img6 from "../../images/box1/nz.png";
 
-import img7 from "../../images/box2/px_2.jpg";
-import img8 from "../../images/box2/nx_2.jpg";
-import img9 from "../../images/box2/py_2.jpg";
-import img10 from "../../images/box2/ny_2.jpg";
-import img11 from "../../images/box2/pz_2.jpg";
-import img12 from "../../images/box2/nz_2.jpg";
+// import img1 from "../../images/Old/box1/px_1.jpg";
+// import img2 from "../../images/Old/box1/nx_1.jpg";
+// import img3 from "../../images/Old/box1/py_1.jpg";
+// import img4 from "../../images/Old/box1/ny_1.jpg";
+// import img5 from "../../images/Old/box1/pz_1.jpg";
+// import img6 from "../../images/Old/box1/nz_1.jpg";
 
-import img13 from "../../images/box3/px_3.jpg";
-import img14 from "../../images/box3/nx_3.jpg";
-import img15 from "../../images/box3/py_3.jpg";
-import img16 from "../../images/box3/ny_3.jpg";
-import img17 from "../../images/box3/pz_3.jpg";
-import img18 from "../../images/box3/nz_3.jpg";
+import img7 from "../../images/box2/px.png";
+import img8 from "../../images/box2/nx.png";
+import img9 from "../../images/box2/py.png";
+import img10 from "../../images/box2/ny.png";
+import img11 from "../../images/box2/pz.png";
+import img12 from "../../images/box2/nz.png";
+
+import img13 from "../../images/box3/px.png";
+import img14 from "../../images/box3/nx.png";
+import img15 from "../../images/box3/py.png";
+import img16 from "../../images/box3/ny.png";
+import img17 from "../../images/box3/pz.png";
+import img18 from "../../images/box3/nz.png";
 
 import { degToRad } from "three/src/math/MathUtils";
 import { useLoader } from "@react-three/fiber";
@@ -35,10 +42,9 @@ const fakeData = [
       {
         sceneID: "box2",
         position: [-499, -120, -20],
-        rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
         defaultRotation: [degToRad(-45), degToRad(300), 0],
-        viewpoint: [0, 0, 0],
+        viewpoint: [-499, 0, -20],
       },
     ],
   },
@@ -49,7 +55,6 @@ const fakeData = [
       {
         sceneID: "box1",
         position: [-499, -200, 107],
-        rotation: [-Math.PI / 2, 0, 0],
         scale: 6,
         defaultRotation: [0, degToRad(-90), 0],
         viewpoint: [0, 0, 0],
@@ -57,7 +62,6 @@ const fakeData = [
       {
         sceneID: "box3",
         position: [499, -216, -197],
-        rotation: [-Math.PI / 2, 0, 0],
         scale: 7,
         defaultRotation: [0, degToRad(180), 0],
         viewpoint: [0, 0, 0],
@@ -71,7 +75,6 @@ const fakeData = [
       {
         sceneID: "box2",
         position: [-360, -364, -499],
-        rotation: [-Math.PI / 2, 0, 0],
         scale: 8,
         defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
@@ -79,7 +82,6 @@ const fakeData = [
       {
         boxID: 3,
         position: [0, -499, 0],
-        rotation: [-Math.PI / 2, 0, 0],
         scale: 5,
         defaultRotation: [0, degToRad(15), 0],
         viewpoint: [0, 0, 0],
