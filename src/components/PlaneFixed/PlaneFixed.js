@@ -15,10 +15,9 @@ function PlaneFixed(props) {
       onClick={() => props.handleSelectedStep(sceneID, position)}
       rotation={[-Math.PI / 2, 0, 0]}
       position={position}
-      scale={scale}
     >
-      {/* <axesHelper args={[100, 100, 100]} /> */}
-      <planeBufferGeometry attach="geometry" args={[10, 10]} />
+      <axesHelper args={[100, 100, 100]} />
+      <planeBufferGeometry attach="geometry" args={[75, 75]} />
       <meshBasicMaterial
         attach="material"
         map={circleFixed}

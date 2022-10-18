@@ -18,16 +18,15 @@ const createBox = (images, position, rotation) => {
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshPhongMaterial({
+      map: loader.load(img),
       side: THREE.BackSide,
       transparent: true,
-      opacity: 0,
+      opacity: 1,
+      color: 0xffffff,
     });
-    // material.map = loader.load(img, (texture) => {
-    //   texture.encoding = THREE.sRGBEncoding;
-    // });
-    // material.map
     return material;
   });
+
   const mesh = new THREE.Mesh(geometry, materials);
   mesh.position.x = x;
   mesh.position.y = y;
@@ -39,19 +38,18 @@ const createBox = (images, position, rotation) => {
     SCALE_VARIANTS.BIG
   ); // Texture reversed on the x axis
 
-  const gui = new GUI();
-  const sceneFolder = gui.addFolder("Scene");
-  sceneFolder.add(mesh.rotation, "x", -Math.PI, Math.PI, 0.01);
-  sceneFolder.add(mesh.rotation, "y", -Math.PI, Math.PI, 0.01);
-  sceneFolder.add(mesh.rotation, "z", -Math.PI, Math.PI, 0.01);
-  sceneFolder.open();
+  // const gui = new GUI();
+  // const sceneFolder = gui.addFolder("Scene");
+  // sceneFolder.add(mesh.rotation, "x", -Math.PI, Math.PI, 0.01);
+  // sceneFolder.add(mesh.rotation, "y", -Math.PI, Math.PI, 0.01);
+  // sceneFolder.add(mesh.rotation, "z", -Math.PI, Math.PI, 0.01);
+  // sceneFolder.open();
   return mesh;
 };
 
 const updateBox = (mesh, opacity, scale, position) => {
   if (scale !== undefined) {
-    // Texture reversed on the x axis
-    mesh.scale.set(-scale, scale, scale);
+    mesh.scale.set(-scale, scale, scale); // Texture reversed on the x axis
   }
   if (position !== undefined) {
     const [x, y, z] = position;
@@ -67,13 +65,13 @@ const updateBox = (mesh, opacity, scale, position) => {
   }
 };
 
-const updateBoxImages = (mesh, images) => {
-  mesh.material.forEach((m, index) => {
-    m.map = new THREE.TextureLoader().load(images[index]);
-    m.needsUpdate = true;
-  });
-  return mesh;
-};
+// const updateBoxImages = (mesh, images) => {
+//   mesh.material.forEach((m, index) => {
+//     m.map = new THREE.TextureLoader().load(images[index]);
+//     m.needsUpdate = true;
+//   });
+//   return mesh;
+// };
 
 function SceneBox({
   sceneData,
@@ -84,20 +82,22 @@ function SceneBox({
   ...props
 }) {
   const meshRef = useRef();
-  const { gl, scene } = useThree();
+  const { scene } = useThree();
+
+  const images = sceneData.images;
 
   useEffect(() => {
     if (!meshRef.current) {
-      meshRef.current = createBox(sceneData.images, position, rotation);
+      meshRef.current = createBox(images, position, rotation);
       scene.add(meshRef.current);
     }
     // Update the pictures in the scene box
-    if (meshRef.current) {
-      meshRef.current = updateBoxImages(meshRef.current, sceneData.images);
-      scene.add(meshRef.current);
-    }
+    // if (meshRef.current) {
+    //   meshRef.current = updateBoxImages(meshRef.current, images);
+    //   scene.add(meshRef.current);
+    // }
     // gl.gammaOutput = true;
-  }, [scene, sceneData.images]);
+  }, [scene, images]);
 
   const [showStep, setShowStep] = useState(false);
 
@@ -157,14 +157,13 @@ function SceneBox({
 
   const hotspots = sceneData.hotspots;
 
+  console.log("scene", scene);
+
   const handleSelectedStep = (sceneID, stepPos) => {
     console.log("clicked");
     props.onClickStep(sceneID, stepPos);
     console.log("done hide");
   };
-
-  const images = sceneData.images;
-  const textures = useLoader(THREE.TextureLoader, images);
 
   return (
     <group>
