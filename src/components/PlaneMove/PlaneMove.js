@@ -63,7 +63,6 @@ function PlaneMove({ boxWidth, ...props }) {
         circlePointerMove.y,
         circlePointerMove.z
       );
-      plane.current.scale.set(1, 1, 1);
     }
   }
 
@@ -71,7 +70,6 @@ function PlaneMove({ boxWidth, ...props }) {
     (function responsivePlaneMove() {
       if (size.width < 768) {
         isResponsive.current = true;
-        plane.current.scale.set(0, 0, 0);
       }
     })();
   }, [size.width]);

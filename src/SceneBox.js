@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { GUI } from "three/examples/jsm/libs/dat.gui.module";
-import { useThree, useLoader } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { gsap } from "gsap";
 import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
-import PlaneMove from "./components/PlaneMove/PlaneMove";
+// import PlaneMove from "./components/PlaneMove/PlaneMove";
 
 const SCALE_VARIANTS = {
   DEFAULT: 1,
@@ -33,17 +32,11 @@ const createBox = (images, position, rotation) => {
   mesh.position.z = z;
   mesh.rotation.set(rotation[0], rotation[1], rotation[2]);
   mesh.scale.set(
-    -1 * SCALE_VARIANTS.BIG,
+    -1 * SCALE_VARIANTS.BIG, // Texture reversed on the x axis
     SCALE_VARIANTS.BIG,
     SCALE_VARIANTS.BIG
-  ); // Texture reversed on the x axis
+  );
 
-  // const gui = new GUI();
-  // const sceneFolder = gui.addFolder("Scene");
-  // sceneFolder.add(mesh.rotation, "x", -Math.PI, Math.PI, 0.01);
-  // sceneFolder.add(mesh.rotation, "y", -Math.PI, Math.PI, 0.01);
-  // sceneFolder.add(mesh.rotation, "z", -Math.PI, Math.PI, 0.01);
-  // sceneFolder.open();
   return mesh;
 };
 
@@ -65,13 +58,13 @@ const updateBox = (mesh, opacity, scale, position) => {
   }
 };
 
-// const updateBoxImages = (mesh, images) => {
-//   mesh.material.forEach((m, index) => {
-//     m.map = new THREE.TextureLoader().load(images[index]);
-//     m.needsUpdate = true;
-//   });
-//   return mesh;
-// };
+const updateBoxImages = (mesh, images) => {
+  mesh.material.forEach((m, index) => {
+    m.map = new THREE.TextureLoader().load(images[index]);
+    m.needsUpdate = true;
+  });
+  return mesh;
+};
 
 function SceneBox({
   sceneData,
@@ -92,12 +85,11 @@ function SceneBox({
       scene.add(meshRef.current);
     }
     // Update the pictures in the scene box
-    // if (meshRef.current) {
-    //   meshRef.current = updateBoxImages(meshRef.current, images);
-    //   scene.add(meshRef.current);
-    // }
-    // gl.gammaOutput = true;
-  }, [scene, images]);
+    if (meshRef.current) {
+      meshRef.current = updateBoxImages(meshRef.current, images);
+      scene.add(meshRef.current);
+    }
+  }, [scene, images, position, rotation]);
 
   const [showStep, setShowStep] = useState(false);
 
@@ -120,7 +112,7 @@ function SceneBox({
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 5,
+        duration: 1,
         onUpdate: () => {
           updateBox(meshRef.current, animData.opacity, animData.scale, [
             animData.positionX,
@@ -139,7 +131,7 @@ function SceneBox({
         opacity: 0.7,
         positionX: positionNext[0] * -0.7,
         positionZ: positionNext[2] * -0.7,
-        duration: 2,
+        duration: 1,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [
@@ -153,11 +145,9 @@ function SceneBox({
         },
       });
     }
-  }, [showAnim]);
+  }, [showAnim, position, positionNext]);
 
   const hotspots = sceneData.hotspots;
-
-  console.log("scene", scene);
 
   const handleSelectedStep = (sceneID, stepPos) => {
     console.log("clicked");
@@ -167,19 +157,6 @@ function SceneBox({
 
   return (
     <group>
-      {/* <mesh position={[0, 0, 0]} rotation={[0, 0, 0]}>
-        <boxBufferGeometry attach="geometry" args={[1100, 1100, 1100]} />
-        {textures.map((texture, index) => (
-          <meshPhongMaterial
-            key={index}
-            attachArray="material"
-            map={texture}
-            side={THREE.DoubleSide}
-            transparent
-            opacity={1}
-          />
-        ))}
-      </mesh> */}
       <mesh rotation={rotation}>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshBasicMaterial
@@ -197,7 +174,7 @@ function SceneBox({
                 handleSelectedStep={handleSelectedStep}
               />
             ))}
-            <PlaneMove boxWidth={1000} />
+            {/* <PlaneMove boxWidth={1000} /> */}
           </>
         ) : null}
       </mesh>

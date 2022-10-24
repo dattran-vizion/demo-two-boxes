@@ -33,14 +33,7 @@ import img28 from "../../images/box5/ny.png";
 import img29 from "../../images/box5/pz.png";
 import img30 from "../../images/box5/nz.png";
 
-import img31 from "../../images/box6/px.png";
-import img32 from "../../images/box6/nx.png";
-import img33 from "../../images/box6/py.png";
-import img34 from "../../images/box6/ny.png";
-import img35 from "../../images/box6/pz.png";
-import img36 from "../../images/box6/nz.png";
-
-import { degToRad } from "three/src/math/MathUtils";
+// import { degToRad } from "three/src/math/MathUtils";
 import { useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
 
@@ -55,8 +48,8 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box2",
-        position: [-499, -120, -20],
-        defaultRotation: [degToRad(-45), degToRad(300), 0],
+        position: [499, -250, 190],
+        // defaultRotation: [degToRad(-45), degToRad(300), 0],
         viewpoint: [-499, 0, -20],
       },
     ],
@@ -67,14 +60,14 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box1",
-        position: [-499, -200, 107],
-        defaultRotation: [0, degToRad(-90), 0],
+        position: [-350, -300, 500],
+        // defaultRotation: [0, degToRad(-90), 0],
         viewpoint: [0, 0, 0],
       },
       {
         sceneID: "box3",
-        position: [499, -216, -197],
-        defaultRotation: [0, degToRad(180), 0],
+        position: [0, -100, -500],
+        // defaultRotation: [0, degToRad(180), 0],
         viewpoint: [0, 0, 0],
       },
     ],
@@ -85,14 +78,14 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box2",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
+        position: [-100, -300, 500],
+        // defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
       },
       {
         sceneID: "box4",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
+        position: [-350, -300, -300],
+        // defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
       },
     ],
@@ -103,14 +96,14 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box3",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
+        position: [500, -450, 500],
+        // defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
       },
       {
         sceneID: "box5",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
+        position: [-160, -200, -500],
+        // defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
       },
     ],
@@ -121,32 +114,8 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box4",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
-        viewpoint: [0, 0, 0],
-      },
-      {
-        sceneID: "box6",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
-        viewpoint: [0, 0, 0],
-      },
-    ],
-  },
-  {
-    id: "box6",
-    images: [img31, img32, img33, img34, img35, img36],
-    hotspots: [
-      {
-        sceneID: "box5",
-        position: [-360, -364, -499],
-        defaultRotation: [0, degToRad(120), 0],
-        viewpoint: [0, 0, 0],
-      },
-      {
-        boxID: 3,
-        position: [0, -499, 0],
-        defaultRotation: [0, degToRad(15), 0],
+        position: [500, -250, 500],
+        // defaultRotation: [0, degToRad(120), 0],
         viewpoint: [0, 0, 0],
       },
     ],
