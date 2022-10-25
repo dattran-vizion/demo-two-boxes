@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
+import { useThree, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
 import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 // import PlaneMove from "./components/PlaneMove/PlaneMove";
@@ -22,6 +22,8 @@ const loader = new THREE.TextureLoader();
 
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
+  console.log("position", position);
+  console.log("rotation", rotation);
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshPhongMaterial({
@@ -48,7 +50,7 @@ const createBox = (images, position, rotation) => {
   return mesh;
 };
 
-const updateBox = (mesh, opacity, scale, position) => {
+const updateBox = (mesh, opacity, scale, position, rotation) => {
   if (scale !== undefined) {
     mesh.scale.set(-scale, scale, scale); // Texture reversed on the x axis
   }
@@ -58,6 +60,13 @@ const updateBox = (mesh, opacity, scale, position) => {
     mesh.position.y = y;
     mesh.position.z = z;
   }
+  if (rotation !== undefined) {
+    const [rotation_x, rotation_y, rotation_z] = rotation;
+    mesh.rotation.x = rotation_x;
+    mesh.rotation.y = rotation_y;
+    mesh.rotation.z = rotation_z;
+  }
+
   if (opacity !== undefined) {
     mesh.material.forEach((m) => {
       m.opacity = opacity;
@@ -82,11 +91,11 @@ function SceneBox({
   positionNext,
   ...props
 }) {
-  const meshRef = useRef();
-  // const pointRef = useRef();
-  const { scene } = useThree();
-
   const images = sceneData.images;
+  const hotspots = sceneData.hotspots;
+  const meshRef = useRef();
+  const groupRef = useRef();
+  const { scene } = useThree();
 
   useEffect(() => {
     if (!meshRef.current) {
@@ -98,11 +107,6 @@ function SceneBox({
       meshRef.current = updateBoxImages(meshRef.current, images);
       scene.add(meshRef.current);
     }
-
-    // if (!pointRef.current) {
-    //   // pointRef.current = createPoint(viewpoint);
-    //   scene.add(pointRef.current);
-    // }
   }, [scene, images, position, rotation]);
 
   const [showStep, setShowStep] = useState(false);
@@ -128,11 +132,13 @@ function SceneBox({
         positionZ: 0,
         duration: 1,
         onUpdate: () => {
-          updateBox(meshRef.current, animData.opacity, animData.scale, [
-            animData.positionX,
-            0,
-            animData.positionZ,
-          ]);
+          updateBox(
+            meshRef.current,
+            animData.opacity,
+            animData.scale,
+            [animData.positionX, 0, animData.positionZ],
+            rotation
+          );
         },
         onComplete: () => {
           setTimeout(() => setShowStep(true), 1000);
@@ -161,7 +167,13 @@ function SceneBox({
     }
   }, [showAnim, position, positionNext]);
 
-  const hotspots = sceneData.hotspots;
+  useFrame(() => {
+    if (groupRef.current) {
+      groupRef.current.rotation.x = rotation[0];
+      groupRef.current.rotation.y = rotation[1];
+      groupRef.current.rotation.z = rotation[2];
+    }
+  });
 
   const handleSelectedStep = (sceneID, stepPos, sceneRotation) => {
     console.log("sceneRotation", sceneRotation);
@@ -169,7 +181,7 @@ function SceneBox({
   };
 
   return (
-    <group rotation={rotation}>
+    <group ref={groupRef}>
       <mesh>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshBasicMaterial

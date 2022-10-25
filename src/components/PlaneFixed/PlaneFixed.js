@@ -65,9 +65,9 @@ function PlaneFixed({ step, handleSelectedStep }) {
     const intersects = raycaster.intersectObjects(scene.children);
     console.log("intersects", intersects);
     return {
-      x: intersects[3].point.x,
-      y: intersects[3].point.y,
-      z: intersects[3].point.z,
+      x: intersects[0].point.x,
+      y: intersects[0].point.y,
+      z: intersects[0].point.z,
     };
   }
 

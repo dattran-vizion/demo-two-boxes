@@ -18,13 +18,13 @@ export default function App() {
     >
       <CameraController />
       <ambientLight intensity={0.8} />
-      <axesHelper args={[100, 100, 100]} />
-      {/* <Suspense fallback={null}>
-        <SceneToggle scenes={fakeData} />
-      </Suspense> */}
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <Suspense fallback={null}>
-        <TestGroup />
+        <SceneToggle scenes={fakeData} />
       </Suspense>
+      {/* <Suspense fallback={null}>
+        <TestGroup />
+      </Suspense> */}
     </Canvas>
   );
 }
