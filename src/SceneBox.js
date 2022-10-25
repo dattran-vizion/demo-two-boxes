@@ -12,6 +12,14 @@ const SCALE_VARIANTS = {
 
 const loader = new THREE.TextureLoader();
 
+// function createPoint(position) {
+//   const geometry = new THREE.SphereGeometry(5, 5, 5);
+//   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+//   const sphere = new THREE.Mesh(geometry, material);
+//   sphere.position.set(position[0], position[1], position[2]);
+//   return sphere;
+// }
+
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
@@ -75,6 +83,7 @@ function SceneBox({
   ...props
 }) {
   const meshRef = useRef();
+  // const pointRef = useRef();
   const { scene } = useThree();
 
   const images = sceneData.images;
@@ -89,6 +98,11 @@ function SceneBox({
       meshRef.current = updateBoxImages(meshRef.current, images);
       scene.add(meshRef.current);
     }
+
+    // if (!pointRef.current) {
+    //   // pointRef.current = createPoint(viewpoint);
+    //   scene.add(pointRef.current);
+    // }
   }, [scene, images, position, rotation]);
 
   const [showStep, setShowStep] = useState(false);
@@ -129,8 +143,8 @@ function SceneBox({
       const animData = { scale: 1, opacity: 1, positionX: 0, positionZ: 0 };
       gsap.to(animData, {
         opacity: 0.7,
-        positionX: positionNext[0] * -0.7,
-        positionZ: positionNext[2] * -0.7,
+        positionX: positionNext[0] * -0.5,
+        positionZ: positionNext[2] * -0.5,
         duration: 1,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
@@ -149,15 +163,14 @@ function SceneBox({
 
   const hotspots = sceneData.hotspots;
 
-  const handleSelectedStep = (sceneID, stepPos) => {
-    console.log("clicked");
-    props.onClickStep(sceneID, stepPos);
-    console.log("done hide");
+  const handleSelectedStep = (sceneID, stepPos, sceneRotation) => {
+    console.log("sceneRotation", sceneRotation);
+    props.onClickStep(sceneID, stepPos, sceneRotation);
   };
 
   return (
-    <group>
-      <mesh rotation={rotation}>
+    <group rotation={rotation}>
+      <mesh>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshBasicMaterial
           attach="material"
@@ -167,10 +180,10 @@ function SceneBox({
         />
         {isStepVisible ? (
           <>
-            {hotspots.map((hotspot, index) => (
+            {hotspots.map((step, index) => (
               <PlaneFixed
                 key={index}
-                hotspot={hotspot}
+                step={step}
                 handleSelectedStep={handleSelectedStep}
               />
             ))}

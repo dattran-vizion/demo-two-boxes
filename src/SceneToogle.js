@@ -12,18 +12,22 @@ const SceneToggle = ({ scenes }) => {
   const [currScene, setCurrentScene] = useState("sceneA");
   const [sceneAPos, setSceneAPos] = useState([0, 0, 0]);
   const [sceneBPos, setSceneBPos] = useState([0, 0, 0]);
+  const [sceneARotation, setSceneARotation] = useState([0, 0, 0]);
+  const [sceneBRotation, setSceneBRotation] = useState(null);
 
   const handleClickStep = useCallback(
-    (sceneID, stepPos) => {
+    (sceneID, stepPos, sceneRotation) => {
       const targetScene = scenes.find((scene) => scene.id === sceneID);
       if (currScene === "sceneA") {
         setSceneBPos([...stepPos]);
         setSceneB(targetScene);
         setCurrentScene("sceneB");
+        setSceneBRotation(sceneRotation);
       } else {
         setSceneAPos([...stepPos]);
         setSceneA(targetScene);
         setCurrentScene("sceneA");
+        setSceneARotation(sceneRotation);
       }
       setShowAnim(!showAnim);
     },
@@ -35,7 +39,8 @@ const SceneToggle = ({ scenes }) => {
       <SceneBox
         sceneData={sceneA}
         showAnim={showAnim}
-        rotation={[0, 0, 0]}
+        rotation={sceneARotation}
+        // rotation={[0, 0, 0]}
         position={sceneAPos}
         positionNext={sceneBPos}
         onClickStep={handleClickStep}
@@ -44,7 +49,8 @@ const SceneToggle = ({ scenes }) => {
         <SceneBox
           sceneData={sceneB}
           showAnim={!showAnim}
-          rotation={[0, 0, 0]}
+          rotation={sceneBRotation}
+          // rotation={[0, 0, 0]}
           position={sceneBPos}
           positionNext={sceneAPos}
           onClickStep={handleClickStep}
