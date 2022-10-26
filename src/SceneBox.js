@@ -2,7 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useThree, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
-import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
+import PlaneFixed from "./components/PlaneFixed/PlaneFixedNewData";
+// import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 // import PlaneMove from "./components/PlaneMove/PlaneMove";
 
 const SCALE_VARIANTS = {
@@ -44,7 +45,7 @@ const createBox = (images, position, rotation) => {
   mesh.scale.set(
     -1 * SCALE_VARIANTS.BIG, // Texture reversed on the x axis
     SCALE_VARIANTS.BIG,
-    SCALE_VARIANTS.BIG
+    1 * SCALE_VARIANTS.BIG
   );
 
   return mesh;

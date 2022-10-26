@@ -5,7 +5,8 @@ import { Canvas } from "@react-three/fiber";
 import SceneToggle from "./SceneToogle.js";
 
 import CameraController from "./components/CameraController";
-import fakeData from "./assets/fakeData/data";
+import fakeData from "./assets/fakeData/newData";
+// import fakeData from "./assets/fakeData/data";
 
 import "./styles.css";
 import TestGroup from "./Test";
@@ -18,7 +19,7 @@ export default function App() {
     >
       <CameraController />
       <ambientLight intensity={0.8} />
-      {/* <axesHelper args={[100, 100, 100]} /> */}
+      <axesHelper args={[100, 100, 100]} />
       <Suspense fallback={null}>
         <SceneToggle scenes={fakeData} />
       </Suspense>

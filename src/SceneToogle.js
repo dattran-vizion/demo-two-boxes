@@ -2,7 +2,8 @@ import React, { useCallback, useState } from "react";
 // import * as THREE from "three";
 // import { useThree } from "@react-three/fiber";
 
-import SceneBox from "./SceneBox";
+// import SceneBox from "./SceneBox";
+import SceneBox from "./SceneBoxNewData";
 
 const SceneToggle = ({ scenes }) => {
   const [sceneA, setSceneA] = useState(scenes[0]);
