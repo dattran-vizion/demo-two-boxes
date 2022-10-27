@@ -7,8 +7,8 @@ import { degToRad, radToDeg } from "three/src/math/MathUtils";
 import CircleFixed from "../../images/circleFixed.png";
 import { useCallback } from "react";
 
-const raycaster = new THREE.Raycaster();
 const theOrigin = { x: 0, y: 0, z: 0 };
+const theFirstCameraPosition = [-153.96278, -43.453156, -500.0];
 
 function cosTwoVectors(a, b) {
   return (
@@ -26,10 +26,18 @@ function vector(theFirst, theLast) {
   };
 }
 
+function getRotationDirection(firstVector, lastVector) {
+  return {
+    x: firstVector.y * lastVector.z - firstVector.z * lastVector.y,
+    y: firstVector.z * lastVector.x - firstVector.x * lastVector.z,
+    z: firstVector.x * lastVector.y - firstVector.y * lastVector.x,
+  };
+}
+
 function PlaneFixed({ step, handleSelectedStep }) {
   const { camera, scene } = useThree();
   const { sceneID, position, cameraPosition, targetSceneCameraPosition } = step;
-  const [viewpointX, viewpointY, viewpointZ] = cameraPosition;
+  const [cameraPosX, cameraPosY, cameraPosZ] = cameraPosition;
   const [
     targetSceneCameraPositionX,
     targetSceneCameraPositionY,
@@ -65,24 +73,12 @@ function PlaneFixed({ step, handleSelectedStep }) {
     [angleRotaion]
   );
 
-  // function getCurrViewPoint(camera, scene) {
-  //   raycaster.setFromCamera({ x: 0, y: 0 }, camera);
-  //   const intersects = raycaster.intersectObjects(scene.children);
-  //   console.log("intersects", intersects);
-  //   return {
-  //     x: intersects[0].point.x,
-  //     y: intersects[0].point.y,
-  //     z: intersects[0].point.z,
-  //   };
-  // }
-
   const onClick = useCallback(
     (e) => {
-      // const currVP = getCurrViewPoint(camera, scene);
       const currViewpointVec = vector(theOrigin, {
-        x: viewpointX,
-        y: viewpointY,
-        z: viewpointZ,
+        x: theFirstCameraPosition[0],
+        y: theFirstCameraPosition[1],
+        z: theFirstCameraPosition[2],
       });
       const stepViewpointVec = vector(theOrigin, {
         x: targetSceneCameraPositionX,
@@ -119,23 +115,22 @@ function PlaneFixed({ step, handleSelectedStep }) {
         y: stepViewpointVec.y,
         z: 0,
       };
-      const sceneRotation_x = Math.acos(
-        cosTwoVectors(currVPVecOnYZ, stepVPVecOnYZ)
-      );
 
-      console.log("sceneRotation_x", radToDeg(sceneRotation_x));
+      const crossProduct = getRotationDirection(currVPVecOnXZ, stepVPVecOnXZ);
+      let sceneRotation_y = 0;
 
-      const sceneRotation_y = Math.acos(
-        cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ)
-      );
-
-      console.log("sceneRotation_y", radToDeg(sceneRotation_y));
-
-      const sceneRotation_z = Math.acos(
-        cosTwoVectors(currVPVecOnXY, stepVPVecOnXY)
-      );
-
-      console.log("sceneRotation_z", radToDeg(sceneRotation_z));
+      // Use cross product to determine rotation direction.
+      if (crossProduct.y < 0) {
+        sceneRotation_y = Math.acos(
+          cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ)
+        );
+      } else if (cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ) > 0) {
+        sceneRotation_y = -Math.acos(
+          cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ)
+        );
+      } else {
+        console.log("Two vectors are parallel");
+      }
 
       const sceneRotation = [0, sceneRotation_y, 0];
       handleSelectedStep(sceneID, position, sceneRotation);
@@ -155,9 +150,8 @@ function PlaneFixed({ step, handleSelectedStep }) {
       onClick={onClick}
       rotation={[-Math.PI / 2, 0, angleRotaion]}
       position={position}
-      // position={[0,0,0]}
     >
-      <axesHelper args={[100, 100, 100]} />
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <planeBufferGeometry attach="geometry" args={[75, 75]} />
       <meshBasicMaterial
         attach="material"

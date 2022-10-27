@@ -2,8 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useThree, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
-import PlaneFixed from "./components/PlaneFixed/PlaneFixedNewData";
-// import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
+import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 // import PlaneMove from "./components/PlaneMove/PlaneMove";
 
 const SCALE_VARIANTS = {
@@ -131,7 +130,7 @@ function SceneBox({
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 1,
+        duration: 5,
         onUpdate: () => {
           updateBox(
             meshRef.current,
@@ -152,7 +151,7 @@ function SceneBox({
         opacity: 0.7,
         positionX: positionNext[0] * -0.5,
         positionZ: positionNext[2] * -0.5,
-        duration: 1,
+        duration: 5,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [

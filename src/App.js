@@ -16,6 +16,7 @@ export default function App() {
     <Canvas
       camera={{ position: [10, 10, 10], fov: 60, near: 0.1, far: 15000 }}
       // camera={{ position: [3000, 3000, 3000], fov: 60, near: 10, far: 15000 }}
+      // camera={{ position: [0, 3000, 0], fov: 60, near: 10, far: 15000 }}
     >
       <CameraController />
       <ambientLight intensity={0.8} />

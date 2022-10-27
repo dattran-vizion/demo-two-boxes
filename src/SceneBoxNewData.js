@@ -13,18 +13,8 @@ const SCALE_VARIANTS = {
 
 const loader = new THREE.TextureLoader();
 
-// function createPoint(position) {
-//   const geometry = new THREE.SphereGeometry(5, 5, 5);
-//   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-//   const sphere = new THREE.Mesh(geometry, material);
-//   sphere.position.set(position[0], position[1], position[2]);
-//   return sphere;
-// }
-
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
-  console.log("position", position);
-  console.log("rotation", rotation);
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshPhongMaterial({
@@ -61,6 +51,7 @@ const updateBox = (mesh, opacity, scale, position, rotation) => {
     mesh.position.y = y;
     mesh.position.z = z;
   }
+
   if (rotation !== undefined) {
     const [rotation_x, rotation_y, rotation_z] = rotation;
     mesh.rotation.x = rotation_x;
@@ -98,6 +89,17 @@ function SceneBox({
   const groupRef = useRef();
   const { scene } = useThree();
 
+  // console.log("positionNext: ", positionNext);
+  // console.log("rotation: ", rotation);
+  // console.log(
+  //   "rotationPositionNext_X: ",
+  //   positionNext[0] * Math.cos(rotation[1]) + positionNext[2] * Math.sin(rotation[1])
+  // );
+  // console.log(
+  //   "rotationPositionNext_Z: ",
+  //   -position[0] * Math.sin(rotation[1]) + position[2] * Math.cos(rotation[1])
+  // );
+
   useEffect(() => {
     if (!meshRef.current) {
       meshRef.current = createBox(images, position, rotation);
@@ -123,15 +125,27 @@ function SceneBox({
       const animData = {
         scale: SCALE_VARIANTS.BIG,
         opacity: 0.7,
-        positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
-        positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
+        // positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
+        // positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
+        positionX:
+          ((position[0] * Math.cos(rotation[1]) +
+            position[2] * Math.sin(rotation[1])) *
+            SCALE_VARIANTS.BIG) /
+            2 -
+          1,
+        positionZ:
+          ((-position[0] * Math.sin(rotation[1]) +
+            position[2] * Math.cos(rotation[1])) *
+            SCALE_VARIANTS.BIG) /
+            2 -
+          1,
       };
       gsap.to(animData, {
         scale: SCALE_VARIANTS.DEFAULT,
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 1,
+        duration: 5,
         onUpdate: () => {
           updateBox(
             meshRef.current,
@@ -152,7 +166,15 @@ function SceneBox({
         opacity: 0.7,
         positionX: positionNext[0] * -0.5,
         positionZ: positionNext[2] * -0.5,
-        duration: 1,
+        // positionX:
+        //   (positionNext[0] * Math.cos(rotation[1]) +
+        //     positionNext[2] * Math.sin(rotation[1])) *
+        //   -0.5,
+        // positionZ:
+        //   (-positionNext[0] * Math.sin(rotation[1]) +
+        //     positionNext[2] * Math.cos(rotation[1])) *
+        //   -0.5,
+        duration: 5,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [
@@ -166,7 +188,7 @@ function SceneBox({
         },
       });
     }
-  }, [showAnim, position, positionNext]);
+  }, [showAnim, position, positionNext, rotation]);
 
   useFrame(() => {
     if (groupRef.current) {
@@ -177,12 +199,12 @@ function SceneBox({
   });
 
   const handleSelectedStep = (sceneID, stepPos, sceneRotation) => {
-    console.log("sceneRotation", sceneRotation);
     props.onClickStep(sceneID, stepPos, sceneRotation);
   };
 
   return (
     <group ref={groupRef}>
+      {/* <group>  */}
       <mesh>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshBasicMaterial
