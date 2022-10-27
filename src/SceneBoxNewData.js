@@ -125,27 +125,27 @@ function SceneBox({
       const animData = {
         scale: SCALE_VARIANTS.BIG,
         opacity: 0.7,
-        // positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
-        // positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
-        positionX:
-          ((position[0] * Math.cos(rotation[1]) +
-            position[2] * Math.sin(rotation[1])) *
-            SCALE_VARIANTS.BIG) /
-            2 -
-          1,
-        positionZ:
-          ((-position[0] * Math.sin(rotation[1]) +
-            position[2] * Math.cos(rotation[1])) *
-            SCALE_VARIANTS.BIG) /
-            2 -
-          1,
+        positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
+        positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
+        // positionX:
+        //   ((position[0] * Math.cos(rotation[1]) +
+        //     position[2] * Math.sin(rotation[1])) *
+        //     SCALE_VARIANTS.BIG) /
+        //     2 -
+        //   1,
+        // positionZ:
+        //   ((-position[0] * Math.sin(rotation[1]) +
+        //     position[2] * Math.cos(rotation[1])) *
+        //     SCALE_VARIANTS.BIG) /
+        //     2 -
+        //   1,
       };
       gsap.to(animData, {
         scale: SCALE_VARIANTS.DEFAULT,
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 5,
+        duration: 1,
         onUpdate: () => {
           updateBox(
             meshRef.current,
@@ -174,7 +174,7 @@ function SceneBox({
         //   (-positionNext[0] * Math.sin(rotation[1]) +
         //     positionNext[2] * Math.cos(rotation[1])) *
         //   -0.5,
-        duration: 5,
+        duration: 1,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [
@@ -204,7 +204,7 @@ function SceneBox({
 
   return (
     <group ref={groupRef}>
-      {/* <group>  */}
+      {/* <group> */}
       <mesh>
         <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
         <meshBasicMaterial

@@ -41,9 +41,9 @@ const fakeData = [
     hotspots: [
       {
         sceneID: "box2",
-        position: [-153.96278, -243.14316, -500.0],
-        cameraPosition: [-153.96278, -43.453156, -500.0],
-        targetSceneCameraPosition: [500.0, 5.996534, -39.35343],
+        position: [-167.87249130830986, -173.0735480339165, -500.0],
+        cameraPosition: [-167.87249130830986, -43.453156, -500.0],
+        targetSceneCameraPosition: [500.0, 5.996534, -17.580930574409706],
       },
     ],
   },
@@ -51,17 +51,17 @@ const fakeData = [
     id: "box2",
     images: [img7, img8, img9, img10, img11, img12],
     hotspots: [
-      // {
-      //   sceneID: "box1",
-      //   position: [-153.96278, -243.14316, -500.0],
-      //   cameraPosition: [500.0, 5.996534, -39.35343],
-      //   targetSceneCameraPosition: [-153.96278, -43.453156, -500.0],
-      // },
       {
         sceneID: "box3",
-        position: [500.0, -151.67587, -21.299591],
-        cameraPosition: [500.0, 29.31803, -21.299591],
-        targetSceneCameraPosition: [-500.0, -52.06919, -116.356995],
+        position: [500.0, -121.55864792966626, -17.580930574409706],
+        cameraPosition: [500.0, 5.996534, -17.580930574409706],
+        targetSceneCameraPosition: [500.0, -52.06919, 106.8793690686938],
+      },
+      {
+        sceneID: "box1",
+        position: [-500, -152.83850785261572, 61.331952521377296],
+        cameraPosition: [-500.0, 29.31803, 61.331952521377296],
+        targetSceneCameraPosition: [-167.87249130830986, -43.453156, -500.0],
       },
     ],
   },
@@ -69,17 +69,17 @@ const fakeData = [
     id: "box3",
     images: [img13, img14, img15, img16, img17, img18],
     hotspots: [
-      // {
-      //   sceneID: "box2",
-      //   position: [500.0, -151.67587, -21.299591],
-      //   cameraPosition: [-500.0, -52.06919, -116.356995],
-      //   targetSceneCameraPosition: [500.0, 29.31803, -21.299591],
-      // },
       {
         sceneID: "box4",
-        position: [-500.0, -380.02744, -359.56024],
-        cameraPosition: [-500.0, -126.04828, -359.56024],
-        targetSceneCameraPosition: [-315.1449, -74.7302, 500.0],
+        position: [-500, -307.33201296939046, -168.2932307461213],
+        cameraPosition: [-500.0, -126.04828, -168.2932307461213],
+        targetSceneCameraPosition: [315.8488058052147, -74.7302, -500.0],
+      },
+      {
+        sceneID: "box2",
+        position: [500, -174.3547387375109, 106.8793690686938],
+        cameraPosition: [500.0, -52.06919, 106.8793690686938],
+        targetSceneCameraPosition: [500.0, 5.996534, -17.580930574409706],
       },
     ],
   },
@@ -87,12 +87,12 @@ const fakeData = [
     id: "box4",
     images: [img19, img20, img21, img22, img23, img24],
     hotspots: [
-      // {
-      //   sceneID: "box3",
-      //   position: [-500.0, -380.02744, -359.56024],
-      //   cameraPosition: [-315.1449, -74.7302, 500.0],
-      //   targetSceneCameraPosition: [-500.0, -126.04828, -359.56024],
-      // },
+      {
+        sceneID: "box3",
+        position: [315.8488058052147, -300.9371371367104, -500],
+        cameraPosition: [315.8488058052147, -74.7302, -500.0],
+        targetSceneCameraPosition: [-500.0, -126.04828, -168.2932307461213],
+      },
     ],
   },
 ];

@@ -8,7 +8,6 @@ import CircleFixed from "../../images/circleFixed.png";
 import { useCallback } from "react";
 
 const theOrigin = { x: 0, y: 0, z: 0 };
-const theFirstCameraPosition = [-153.96278, -43.453156, -500.0];
 
 function cosTwoVectors(a, b) {
   return (
@@ -35,7 +34,9 @@ function getRotationDirection(firstVector, lastVector) {
 }
 
 function PlaneFixed({ step, handleSelectedStep }) {
+  const rotationYRef = useRef(0);
   const { camera, scene } = useThree();
+  const circleFixed = useLoader(TextureLoader, CircleFixed);
   const { sceneID, position, cameraPosition, targetSceneCameraPosition } = step;
   const [cameraPosX, cameraPosY, cameraPosZ] = cameraPosition;
   const [
@@ -43,7 +44,6 @@ function PlaneFixed({ step, handleSelectedStep }) {
     targetSceneCameraPositionY,
     targetSceneCameraPositionZ,
   ] = targetSceneCameraPosition;
-  const circleFixed = useLoader(TextureLoader, CircleFixed);
 
   // Determine the projection of the step on the xz plane of the coordinate of the box.
   const angleRotaion = useMemo(() => {
@@ -75,64 +75,49 @@ function PlaneFixed({ step, handleSelectedStep }) {
 
   const onClick = useCallback(
     (e) => {
-      const currViewpointVec = vector(theOrigin, {
-        x: theFirstCameraPosition[0],
-        y: theFirstCameraPosition[1],
-        z: theFirstCameraPosition[2],
+      const cameraPosVec = vector(theOrigin, {
+        x: cameraPosX,
+        y: cameraPosY,
+        z: cameraPosZ,
       });
-      const stepViewpointVec = vector(theOrigin, {
+      const targetSceneCamPos = vector(theOrigin, {
         x: targetSceneCameraPositionX,
         y: targetSceneCameraPositionY,
         z: targetSceneCameraPositionZ,
       });
-      const currVPVecOnXZ = {
-        x: currViewpointVec.x,
+      const camPosVec = {
+        x: cameraPosVec.x,
         y: 0,
-        z: currViewpointVec.z,
-      };
-      const currVPVecOnYZ = {
-        x: 0,
-        y: currViewpointVec.y,
-        z: currViewpointVec.z,
-      };
-      const currVPVecOnXY = {
-        x: currViewpointVec.x,
-        y: currViewpointVec.y,
-        z: 0,
-      };
-      const stepVPVecOnXZ = {
-        x: stepViewpointVec.x,
-        y: 0,
-        z: stepViewpointVec.z,
-      };
-      const stepVPVecOnYZ = {
-        x: 0,
-        y: stepViewpointVec.y,
-        z: stepViewpointVec.z,
-      };
-      const stepVPVecOnXY = {
-        x: stepViewpointVec.x,
-        y: stepViewpointVec.y,
-        z: 0,
+        z: cameraPosVec.z,
       };
 
-      const crossProduct = getRotationDirection(currVPVecOnXZ, stepVPVecOnXZ);
+      const stepVPVecOnXZ = {
+        x: targetSceneCamPos.x,
+        y: 0,
+        z: targetSceneCamPos.z,
+      };
+
+      const crossProduct = getRotationDirection(camPosVec, stepVPVecOnXZ);
+      console.log("crossProduct", crossProduct);
+
       let sceneRotation_y = 0;
 
       // Use cross product to determine rotation direction.
       if (crossProduct.y < 0) {
         sceneRotation_y = Math.acos(
-          cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ)
+          cosTwoVectors(camPosVec, stepVPVecOnXZ)
         );
-      } else if (cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ) > 0) {
+      } else if (cosTwoVectors(camPosVec, stepVPVecOnXZ) > 0) {
         sceneRotation_y = -Math.acos(
-          cosTwoVectors(currVPVecOnXZ, stepVPVecOnXZ)
+          cosTwoVectors(camPosVec, stepVPVecOnXZ)
         );
       } else {
         console.log("Two vectors are parallel");
       }
 
-      const sceneRotation = [0, sceneRotation_y, 0];
+      console.log("sceneRotation_y", radToDeg(sceneRotation_y));
+
+      const sceneRotation = [0, rotationYRef.current + sceneRotation_y, 0];
       handleSelectedStep(sceneID, position, sceneRotation);
     },
     [
@@ -146,11 +131,7 @@ function PlaneFixed({ step, handleSelectedStep }) {
   );
 
   return (
-    <mesh
-      onClick={onClick}
-      rotation={[-Math.PI / 2, 0, angleRotaion]}
-      position={position}
-    >
+    <mesh onClick={onClick} rotation={rotation} position={position}>
       {/* <axesHelper args={[100, 100, 100]} /> */}
       <planeBufferGeometry attach="geometry" args={[75, 75]} />
       <meshBasicMaterial
