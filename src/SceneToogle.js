@@ -41,7 +41,6 @@ const SceneToggle = ({ scenes }) => {
         sceneData={sceneA}
         showAnim={showAnim}
         rotation={sceneARotation}
-        // rotation={[0, 0, 0]}
         position={sceneAPos}
         positionNext={sceneBPos}
         onClickStep={handleClickStep}
@@ -51,7 +50,6 @@ const SceneToggle = ({ scenes }) => {
           sceneData={sceneB}
           showAnim={!showAnim}
           rotation={sceneBRotation}
-          // rotation={[0, 0, 0]}
           position={sceneBPos}
           positionNext={sceneAPos}
           onClickStep={handleClickStep}

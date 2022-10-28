@@ -12,18 +12,8 @@ const SCALE_VARIANTS = {
 
 const loader = new THREE.TextureLoader();
 
-// function createPoint(position) {
-//   const geometry = new THREE.SphereGeometry(5, 5, 5);
-//   const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-//   const sphere = new THREE.Mesh(geometry, material);
-//   sphere.position.set(position[0], position[1], position[2]);
-//   return sphere;
-// }
-
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
-  console.log("position", position);
-  console.log("rotation", rotation);
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshPhongMaterial({

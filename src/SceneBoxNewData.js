@@ -37,7 +37,6 @@ const createBox = (images, position, rotation) => {
     SCALE_VARIANTS.BIG,
     1 * SCALE_VARIANTS.BIG
   );
-
   return mesh;
 };
 
@@ -89,16 +88,7 @@ function SceneBox({
   const groupRef = useRef();
   const { scene } = useThree();
 
-  // console.log("positionNext: ", positionNext);
-  // console.log("rotation: ", rotation);
-  // console.log(
-  //   "rotationPositionNext_X: ",
-  //   positionNext[0] * Math.cos(rotation[1]) + positionNext[2] * Math.sin(rotation[1])
-  // );
-  // console.log(
-  //   "rotationPositionNext_Z: ",
-  //   -position[0] * Math.sin(rotation[1]) + position[2] * Math.cos(rotation[1])
-  // );
+  const stepCoordRotated = []
 
   useEffect(() => {
     if (!meshRef.current) {
@@ -121,31 +111,21 @@ function SceneBox({
 
   // show
   useEffect(() => {
+    console.log("X: ", position[0]);
+    console.log("Z: ", position[2]);
     if (showAnim) {
       const animData = {
         scale: SCALE_VARIANTS.BIG,
         opacity: 0.7,
         positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
         positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
-        // positionX:
-        //   ((position[0] * Math.cos(rotation[1]) +
-        //     position[2] * Math.sin(rotation[1])) *
-        //     SCALE_VARIANTS.BIG) /
-        //     2 -
-        //   1,
-        // positionZ:
-        //   ((-position[0] * Math.sin(rotation[1]) +
-        //     position[2] * Math.cos(rotation[1])) *
-        //     SCALE_VARIANTS.BIG) /
-        //     2 -
-        //   1,
       };
       gsap.to(animData, {
         scale: SCALE_VARIANTS.DEFAULT,
         opacity: 1,
         positionX: 0,
         positionZ: 0,
-        duration: 1,
+        duration: 5,
         onUpdate: () => {
           updateBox(
             meshRef.current,
@@ -164,17 +144,17 @@ function SceneBox({
       const animData = { scale: 1, opacity: 1, positionX: 0, positionZ: 0 };
       gsap.to(animData, {
         opacity: 0.7,
-        positionX: positionNext[0] * -0.5,
-        positionZ: positionNext[2] * -0.5,
-        // positionX:
-        //   (positionNext[0] * Math.cos(rotation[1]) +
-        //     positionNext[2] * Math.sin(rotation[1])) *
-        //   -0.5,
-        // positionZ:
-        //   (-positionNext[0] * Math.sin(rotation[1]) +
-        //     positionNext[2] * Math.cos(rotation[1])) *
-        //   -0.5,
-        duration: 1,
+        // positionX: positionNext[0] * -0.5,
+        // positionZ: positionNext[2] * -0.5,
+        positionX:
+          (positionNext[0] * Math.cos(rotation[1]) +
+            positionNext[2] * Math.sin(rotation[1])) *
+          -0.5,
+        positionZ:
+          (-positionNext[0] * Math.sin(rotation[1]) +
+            positionNext[2] * Math.cos(rotation[1])) *
+          -0.5,
+        duration: 5,
         onUpdate: () => {
           // updateBox(meshRef.current, animData.opacity);
           updateBox(meshRef.current, animData.opacity, undefined, [
