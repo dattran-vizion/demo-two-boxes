@@ -2,7 +2,6 @@ import React, { useMemo, useState, useRef, memo } from "react";
 import * as THREE from "three";
 import { useLoader, useThree } from "@react-three/fiber";
 import { TextureLoader } from "three/src/loaders/TextureLoader.js";
-import { degToRad, radToDeg } from "three/src/math/MathUtils";
 
 import CircleFixed from "../../images/circleFixed.png";
 import { useCallback } from "react";
@@ -130,7 +129,7 @@ function PlaneFixed({ step, handleSelectedStep }) {
 
   return (
     <mesh onClick={onClick} rotation={rotation} position={position}>
-      <axesHelper args={[100, 100, 100]} />
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <planeBufferGeometry attach="geometry" args={[75, 75]} />
       <meshBasicMaterial
         attach="material"
