@@ -20,11 +20,13 @@ const SceneToggle = ({ scenes }) => {
     (sceneID, stepPos, sceneRotation) => {
       const targetScene = scenes.find((scene) => scene.id === sceneID);
       if (currScene === "sceneA") {
+        console.log("sceneA");
         setSceneBPos([...stepPos]);
         setSceneB(targetScene);
         setCurrentScene("sceneB");
         setSceneBRotation(sceneRotation);
       } else {
+        console.log("sceneB");
         setSceneAPos([...stepPos]);
         setSceneA(targetScene);
         setCurrentScene("sceneA");

@@ -25,30 +25,11 @@ function cosTwoVectors(a, b) {
   );
 }
 
-// function angleTwoVectors(a, b) {
-//   const crossProduct = getCrossProductTwoVectors(a, b);
-//   console.log("crossProduct", crossProduct);
-//   const magnitudeCrossProduct = Math.sqrt(
-//     Math.pow(crossProduct.x, 2) +
-//       Math.pow(crossProduct.y, 2) +
-//       Math.pow(crossProduct.z, 2)
-//   );
-//   console.log("magnitudeCrossProduct", magnitudeCrossProduct);
-//   const magnitudeA = Math.sqrt(
-//     Math.pow(a.x, 2) + Math.pow(a.y, 2) + Math.pow(a.z, 2)
-//   );
-//   console.log("magnitudeA", magnitudeA);
-//   const magnitudeB = Math.sqrt(
-//     Math.pow(b.x, 2) + Math.pow(b.y, 2) + Math.pow(b.z, 2)
-//   );
-//   console.log("magnitudeB", magnitudeB);
-//   console.log("result", magnitudeCrossProduct / (magnitudeA * magnitudeB));
-//   const sinAngle = magnitudeCrossProduct / (magnitudeA * magnitudeB);
-//   console.log("sinAngle", sinAngle);
-//   console.log("sin", Math.sin(degToRad(106.54542171902119)));
-//   console.log("angle", radToDeg(Math.asin(sinAngle)));
-//   return Math.asin(sinAngle);
-// }
+function calculateAngleBetweenVectors(a, b) {
+  const cosAngle = cosTwoVectors(a, b);
+  const angle = Math.acos(cosAngle);
+  return angle;
+}
 
 function vector(theFirst, theLast) {
   return {
@@ -64,6 +45,7 @@ function PlaneFixed({ step, handleSelectedStep }) {
   const { camera, scene } = useThree();
   const circleFixed = useLoader(TextureLoader, CircleFixed);
   const { sceneID, position, cameraPosition, targetSceneCameraPosition } = step;
+  const [stepX, stepY, stepZ] = position;
   const [cameraPosX, cameraPosY, cameraPosZ] = cameraPosition;
   const [
     targetSceneCameraPositionX,
@@ -73,12 +55,13 @@ function PlaneFixed({ step, handleSelectedStep }) {
 
   // Determine the projection of the step on the xz plane of the coordinate of the box.
   const angleRotaion = useMemo(() => {
-    const [stepX, stepY, stepZ] = position;
     const stepPoint = { x: stepX, y: stepY, z: stepZ };
     const vecToProjectionOfStepOnXZ = { ...stepPoint, y: 0 };
     const unitVectorZAxis = { x: 0, y: 0, z: 1 };
-    const cosAngle = cosTwoVectors(vecToProjectionOfStepOnXZ, unitVectorZAxis);
-    const angle = Math.acos(cosAngle);
+    const angle = calculateAngleBetweenVectors(
+      vecToProjectionOfStepOnXZ,
+      unitVectorZAxis
+    );
     let angleRotate = 0;
     if (stepX < 0) {
       angleRotate = -angle + Math.PI;
@@ -101,26 +84,16 @@ function PlaneFixed({ step, handleSelectedStep }) {
 
   const onClick = useCallback(
     (e) => {
-      const cameraPosVec = vector(theOrigin, {
-        x: cameraPosX,
-        y: cameraPosY,
-        z: cameraPosZ,
-      });
-      const targetSceneCamPos = vector(theOrigin, {
-        x: targetSceneCameraPositionX,
-        y: targetSceneCameraPositionY,
-        z: targetSceneCameraPositionZ,
-      });
       const camPosVec = {
-        x: cameraPosVec.x,
+        x: cameraPosX,
         y: 0,
-        z: cameraPosVec.z,
+        z: cameraPosZ,
       };
 
       const stepVPVecOnXZ = {
-        x: targetSceneCamPos.x,
+        x: targetSceneCameraPositionX,
         y: 0,
-        z: targetSceneCamPos.z,
+        z: targetSceneCameraPositionZ,
       };
 
       const crossProduct = getCrossProductTwoVectors(camPosVec, stepVPVecOnXZ);
@@ -136,9 +109,6 @@ function PlaneFixed({ step, handleSelectedStep }) {
       }
 
       rotationYPrev += sceneRotation_y;
-      console.log("rotationYRef.current", radToDeg(rotationYPrev));
-      console.log("rotationY", rotationYPrev);
-
       const sceneRotation = [0, rotationYPrev, 0];
       handleSelectedStep(sceneID, position, sceneRotation);
     },

@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useThree, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
+import { degToRad, radToDeg } from "three/src/math/MathUtils";
 import PlaneFixed from "./components/PlaneFixed/PlaneFixedNewData";
+
 // import PlaneFixed from "./components/PlaneFixed/PlaneFixed";
 // import PlaneMove from "./components/PlaneMove/PlaneMove";
 
@@ -15,6 +17,7 @@ const loader = new THREE.TextureLoader();
 
 const createBox = (images, position, rotation) => {
   let [x, y, z] = position;
+
   const geometry = new THREE.BoxGeometry(1100, 1100, 1100);
   const materials = images.map((img) => {
     const material = new THREE.MeshPhongMaterial({
@@ -44,6 +47,7 @@ const updateBox = (mesh, opacity, scale, position, rotation) => {
   if (scale !== undefined) {
     mesh.scale.set(-scale, scale, scale); // Texture reversed on the x axis
   }
+
   if (position !== undefined) {
     const [x, y, z] = position;
     mesh.position.x = x;
@@ -88,8 +92,6 @@ function SceneBox({
   const groupRef = useRef();
   const { scene } = useThree();
 
-  const stepCoordRotated = []
-
   useEffect(() => {
     if (!meshRef.current) {
       meshRef.current = createBox(images, position, rotation);
@@ -111,14 +113,89 @@ function SceneBox({
 
   // show
   useEffect(() => {
-    console.log("X: ", position[0]);
-    console.log("Z: ", position[2]);
+    // console.log(
+    //   "X: ",
+    //   (positionNext[0] * Math.cos(rotation[1]) +
+    //     positionNext[2] * Math.sin(rotation[1])) *
+    //     4
+    // );
+    // console.log(
+    //   "Z: ",
+    //   (-positionNext[0] * Math.sin(rotation[1]) +
+    //     positionNext[2] * Math.cos(rotation[1])) *
+    //     4
+    // );
+    // console.log("posNext X: ", positionNext[0]);
+    // console.log("posNext Z: ", positionNext[2]);
+    // console.log(
+    //   "positionNext X: ",
+    //   (positionNext[0] * Math.cos(rotation[1]) +
+    //     positionNext[2] * Math.sin(rotation[1])) *
+    //     (SCALE_VARIANTS.BIG / 2 - 1)
+    // );
+
+    // console.log(
+    //   "positionNext Z: ",
+    //   (-positionNext[0] * Math.sin(rotation[1]) +
+    //     positionNext[2] * Math.cos(rotation[1])) *
+    //     (SCALE_VARIANTS.BIG / 2 - 1)
+    // );
+
+    let stepPosition = new THREE.Vector3(position[0], position[1], position[2]);
+    let axis = new THREE.Vector3(0, 1, 0);
+    let angle = -rotation[1];
+
+    let newStepPosition = stepPosition.applyAxisAngle(axis, angle);
+    console.log("newStepPosition: ", newStepPosition);
+
+    console.log("rotation[1]: ", rotation[1]);
+    console.log("rotation[1]: ", radToDeg(rotation[1]));
+    console.log("position X original: ", position[0]);
+
+    console.log("position Z original: ", position[2]);
+
+    console.log(
+      "position rotation X: ",
+      position[0] * Math.cos(rotation[1]) + position[2] * Math.sin(rotation[1])
+    );
+
+    console.log(
+      "position rotation Z: ",
+      -position[0] * Math.sin(rotation[1]) + position[2] * Math.cos(rotation[1])
+    );
+
+    console.log("position X: ", position[0] * (SCALE_VARIANTS.BIG / 2 - 1));
+
+    console.log("position Z: ", position[2] * (SCALE_VARIANTS.BIG / 2 - 1));
+
     if (showAnim) {
       const animData = {
         scale: SCALE_VARIANTS.BIG,
         opacity: 0.7,
-        positionX: (position[0] * SCALE_VARIANTS.BIG) / 2 - 1,
-        positionZ: (position[2] * SCALE_VARIANTS.BIG) / 2 - 1,
+        // positionX: position[0] * (SCALE_VARIANTS.BIG / 2 - 1),
+        // positionZ: position[2] * (SCALE_VARIANTS.BIG / 2 - 1),
+        // positionX: position[0],
+        // positionZ: position[2],
+        positionX: newStepPosition.x * 4,
+        positionZ: newStepPosition.z * 4,
+        // positionX:
+        //   (position[0] * Math.cos(rotation[1]) +
+        //     position[2] * Math.sin(rotation[1])) *
+        //   4,
+        // positionZ:
+        //   (-position[0] * Math.sin(rotation[1]) +
+        //     position[2] * Math.cos(rotation[1])) *
+        //   4,
+        // positionX: -671.4899652332394,
+        // positionZ: -2000,
+        // positionX:
+        //   (positionNext[0] * Math.cos(rotation[1]) +
+        //     positionNext[2] * Math.sin(rotation[1])) *
+        //   (SCALE_VARIANTS.BIG / 2 - 1),
+        // positionZ:
+        //   (-positionNext[0] * Math.sin(rotation[1]) +
+        //     positionNext[2] * Math.cos(rotation[1])) *
+        //   (SCALE_VARIANTS.BIG / 2 - 1),
       };
       gsap.to(animData, {
         scale: SCALE_VARIANTS.DEFAULT,

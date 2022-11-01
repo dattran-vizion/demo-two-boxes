@@ -9,7 +9,6 @@ import fakeData from "./assets/fakeData/newData";
 // import fakeData from "./assets/fakeData/data";
 
 import "./styles.css";
-import TestGroup from "./Test";
 
 export default function App() {
   return (
