@@ -6,7 +6,8 @@ import { useEffect } from "react";
 // import SceneBox from "./SceneBox";
 import SceneBox from "./SceneBoxNewData";
 
-const SceneToggle = ({ scenes }) => {
+const SceneToggle = ({ scenes, handleClick }) => {
+  // const SceneToggle = ({ scenes }) => {
   const [sceneA, setSceneA] = useState(scenes[0]);
   const [sceneB, setSceneB] = useState(null);
 

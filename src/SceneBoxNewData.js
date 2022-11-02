@@ -187,30 +187,31 @@ function SceneBox({
   };
 
   return (
-    <group ref={groupRef}>
-      {/* <group> */}
-      <mesh>
-        <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
-        <meshBasicMaterial
-          attach="material"
-          side={THREE.BackSide}
-          transparent
-          visible={false}
-        />
-        {isStepVisible ? (
-          <>
-            {hotspots.map((step, index) => (
-              <PlaneFixed
-                key={index}
-                step={step}
-                handleSelectedStep={handleSelectedStep}
-              />
-            ))}
-            {/* <PlaneMove boxWidth={1000} /> */}
-          </>
-        ) : null}
-      </mesh>
-    </group>
+    <>
+      <group ref={groupRef}>
+        <mesh>
+          <boxBufferGeometry attach="geometry" args={[1000, 1000, 1000]} />
+          <meshBasicMaterial
+            attach="material"
+            side={THREE.BackSide}
+            transparent
+            visible={false}
+          />
+          {isStepVisible ? (
+            <>
+              {hotspots.map((step, index) => (
+                <PlaneFixed
+                  key={index}
+                  step={step}
+                  handleSelectedStep={handleSelectedStep}
+                />
+              ))}
+              {/* <PlaneMove boxWidth={1000} /> */}
+            </>
+          ) : null}
+        </mesh>
+      </group>
+    </>
   );
 }
 
