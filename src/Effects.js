@@ -8,11 +8,12 @@ import { CopyShader } from "three/examples/jsm/shaders/CopyShader";
 import { BlendShader } from "three/examples/jsm/shaders/BlendShader";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
-export function Effects() {
+export function Effects({ active }) {
   const { scene, gl, size, camera } = useThree();
   const composer = useMemo(() => {
+    // if (!active) return { render: () => false };
     // BEGIN vanilla Three.js
-    const composer = new EffectComposer(gl);
+    const comp = new EffectComposer(gl);
 
     // Render pass
     const renderPass = new RenderPass(scene, camera);
@@ -29,13 +30,13 @@ export function Effects() {
 
     // Output pass
     const outputPass = new ShaderPass(CopyShader);
-    composer.addPass(renderPass);
-    composer.addPass(blendPass);
-    composer.addPass(savePass);
-    composer.addPass(outputPass);
+    comp.addPass(renderPass);
+    comp.addPass(blendPass);
+    comp.addPass(savePass);
+    comp.addPass(outputPass);
 
     // END vanilla Three.js
-    return composer;
+    return comp;
   }, [camera, scene, gl, size]);
 
   useEffect(
@@ -44,5 +45,6 @@ export function Effects() {
   );
 
   useFrame(() => composer.render(), 1);
+
   return null;
 }

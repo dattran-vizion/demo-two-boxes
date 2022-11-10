@@ -41,6 +41,7 @@ const SceneToggle = ({ scenes, handleClick }) => {
         setSceneARotation(sceneRotation);
       }
       setShowAnim(!showAnim);
+      // handleClick();
     },
     [currScene, showAnim, scenes]
   );

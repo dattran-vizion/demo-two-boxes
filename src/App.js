@@ -2,7 +2,7 @@ import ReactDOM from "react-dom";
 import React, { Suspense, useRef, useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 
-import SceneToggle from "./SceneToogle.js";
+import SceneToggle from "./SceneToogle";
 
 import CameraController from "./components/CameraController";
 import fakeData from "./assets/fakeData/newData";
@@ -17,12 +17,15 @@ export default function App() {
 
   const handleClick = () => {
     setStepCliked(true);
-    timerRef.current = setTimeout(() => setStepCliked(false), 1500);
+    timerRef.current = setTimeout(() => {
+      setStepCliked(false);
+    }, 1500);
   };
 
   useEffect(() => {
     // Clear the interval when the component unmounts
-    return () => clearTimeout(timerRef.current);
+    timerRef.current && clearTimeout(timerRef.current);
+    // return () => clearTimeout(timerRef.current);
   }, []);
 
   return (
@@ -33,13 +36,12 @@ export default function App() {
     >
       <CameraController />
       <ambientLight intensity={0.8} />
-      <axesHelper args={[100, 100, 100]} />
+      {/* <axesHelper args={[100, 100, 100]} /> */}
       <Suspense fallback={null}>
         <SceneToggle scenes={fakeData} handleClick={handleClick} />
         {/* <SceneToggle scenes={fakeData} /> */}
       </Suspense>
-      {/* {stepCliked && <Effects />} */}
-      <Effects />
+      <Effects active={stepCliked} />
     </Canvas>
   );
 }
